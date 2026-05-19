@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOP 18 Flagships — AI Use Case Registry</title>
+<style>
+:root {
+  --bg: #f5f3ee;
+  --bg-card: #ffffff;
+  --bg-elevated: #fbfaf7;
+  --ink: #0d1b2a;
+  --ink-soft: #3a4a5c;
+  --ink-muted: #6b7a8c;
+  --line: #e3ddd0;
+  --line-strong: #c9c0ad;
+  --accent: #8b1e3f;
+  --accent-soft: #f4e8eb;
+  --gold: #a07c2c;
+  --gold-soft: #f5edd6;
+  --success: #2d5a3d;
+  --success-soft: #e3ede5;
+  --warn: #8a5a00;
+  --warn-soft: #f7ecd1;
+  --shadow-sm: 0 1px 2px rgba(13,27,42,0.04), 0 0 0 1px rgba(13,27,42,0.04);
+  --shadow-md: 0 4px 16px rgba(13,27,42,0.06), 0 0 0 1px rgba(13,27,42,0.05);
+  --shadow-lg: 0 20px 60px rgba(13,27,42,0.12);
+  --serif: Georgia, "Times New Roman", "Iowan Old Style", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.topbar { background: var(--ink); color: #f5f3ee; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--accent); flex-wrap: wrap; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-mark { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-weight: 700; font-size: 18px; color: #fff; }
+.brand-name { font-family: var(--serif); font-size: 18px; font-weight: 600; letter-spacing: 0.3px; }
+.brand-sub { font-size: 11px; color: rgba(245,243,238,0.6); text-transform: uppercase; letter-spacing: 2px; margin-left: 6px; border-left: 1px solid rgba(245,243,238,0.2); padding-left: 14px; }
+.topbar-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.topbar-btn { background: transparent; color: #f5f3ee; border: 1px solid rgba(245,243,238,0.2); padding: 7px 14px; font-family: inherit; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.topbar-btn:hover { background: rgba(245,243,238,0.08); border-color: rgba(245,243,238,0.4); }
+.mode-badge { font-size: 10px; padding: 5px 10px; border: 1px solid; font-family: var(--mono); letter-spacing: 1.2px; text-transform: uppercase; }
+.mode-badge.read { background: rgba(245,243,238,0.05); color: #c9c0ad; border-color: rgba(245,243,238,0.2); }
+.mode-badge.edit { background: var(--accent); color: #fff; border-color: var(--accent); }
+.save-indicator { font-size: 10px; color: rgba(245,243,238,0.5); font-family: var(--mono); letter-spacing: 1px; }
+.save-indicator.saved { color: #a8d5b2; }
+.breadcrumb { background: var(--bg-elevated); padding: 12px 32px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 1.2px; }
+.breadcrumb a { color: var(--ink-soft); text-decoration: none; cursor: pointer; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--line-strong); }
+.breadcrumb .current { color: var(--ink); font-weight: 600; }
+main { padding: 32px; max-width: 1400px; margin: 0 auto; }
+.view { display: none; animation: fadeIn 0.3s ease; }
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.page-header { margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.page-title { font-family: var(--serif); font-size: 38px; font-weight: 600; letter-spacing: -1px; line-height: 1.1; }
+.page-title .accent { color: var(--accent); font-style: italic; }
+.page-sub { color: var(--ink-muted); margin-top: 6px; font-size: 13px; max-width: 700px; }
+.page-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { padding: 9px 18px; font-family: inherit; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: transparent; display: inline-flex; align-items: center; gap: 6px; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: #f5f3ee; border-color: var(--ink); }
+.btn-primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+.btn-ghost { color: var(--ink-soft); border-color: var(--line-strong); }
+.btn-ghost:hover:not(:disabled) { background: var(--bg-card); color: var(--ink); }
+.btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-accent:hover:not(:disabled) { background: #6e1832; }
+.btn-sm { padding: 6px 12px; font-size: 10px; }
+.btn-danger { color: var(--accent); border-color: var(--accent); }
+.btn-danger:hover:not(:disabled) { background: var(--accent); color: #fff; }
+.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 28px; box-shadow: var(--shadow-sm); }
+.stat { background: var(--bg-card); padding: 18px 22px; }
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.8px; color: var(--ink-muted); margin-bottom: 6px; }
+.stat-value { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); letter-spacing: -0.5px; }
+.stat-trend { font-size: 11px; color: var(--success); margin-top: 2px; font-family: var(--mono); }
+.flagship-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.flagship-card { background: var(--bg-card); border: 1px solid var(--line); padding: 22px; cursor: pointer; transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative; overflow: hidden; }
+.flagship-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); transform: scaleY(0); transform-origin: top; transition: transform 0.3s; }
+.flagship-card:hover { border-color: var(--ink); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.flagship-card:hover::before { transform: scaleY(1); }
+.flagship-rank { font-family: var(--serif); font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.flagship-name { font-family: var(--serif); font-size: 20px; font-weight: 600; line-height: 1.25; margin-bottom: 10px; color: var(--ink); letter-spacing: -0.3px; }
+.flagship-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.flagship-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip { display: inline-flex; align-items: center; padding: 3px 9px; background: var(--bg-elevated); border: 1px solid var(--line); font-size: 11px; color: var(--ink-soft); letter-spacing: 0.3px; font-family: var(--mono); }
+.chip.accent { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent); }
+.chip.gold { background: var(--gold-soft); border-color: var(--gold-soft); color: var(--gold); }
+.flagship-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid var(--line); font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 1px; }
+.uc-count { font-family: var(--serif); font-size: 16px; color: var(--ink); font-style: italic; text-transform: none; letter-spacing: 0; }
+.detail-grid { display: grid; grid-template-columns: 340px 1fr; gap: 24px; margin-bottom: 28px; }
+.info-panel { background: var(--bg-card); border: 1px solid var(--line); padding: 24px; box-shadow: var(--shadow-sm); height: fit-content; }
+.panel-title { font-family: var(--serif); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--line); font-weight: 700; }
+.info-list { display: flex; flex-direction: column; gap: 14px; }
+.info-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); margin-bottom: 3px; }
+.info-value { font-size: 13px; color: var(--ink); line-height: 1.4; }
+.info-value.mono { font-family: var(--mono); font-size: 12px; }
+.section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+.section-title { font-family: var(--serif); font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+.section-title .count { font-style: italic; color: var(--ink-muted); font-weight: 400; margin-left: 6px; }
+.uc-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.uc-row { background: var(--bg-card); border: 1px solid var(--line); padding: 18px 22px; cursor: pointer; transition: all 0.2s; display: grid; grid-template-columns: 1fr auto auto; gap: 24px; align-items: center; }
+.uc-row:hover { border-color: var(--ink); background: var(--bg-elevated); }
+.uc-row-name { font-family: var(--serif); font-size: 17px; font-weight: 600; margin-bottom: 3px; }
+.uc-row-desc { font-size: 12px; color: var(--ink-muted); line-height: 1.4; }
+.uc-row-value { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--accent); text-align: right; white-space: nowrap; }
+.uc-row-value small { font-family: var(--mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 1px; display: block; font-weight: 400; }
+.uc-row-status { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border: 1px solid var(--line-strong); }
+.uc-row-status.live { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+.uc-row-status.pilot { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+.uc-row-status.draft { background: var(--bg-elevated); }
+.add-row { background: transparent; border: 1px dashed var(--line-strong); padding: 16px; cursor: pointer; text-align: center; color: var(--ink-muted); font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; width: 100%; transition: all 0.2s; }
+.add-row:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.uc-header { background: var(--bg-card); border: 1px solid var(--line); padding: 32px; margin-bottom: 24px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+.uc-header::after { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%); pointer-events: none; }
+.uc-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; position: relative; z-index: 1; margin-bottom: 18px; flex-wrap: wrap; }
+.uc-title { font-family: var(--serif); font-size: 30px; font-weight: 600; letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 8px; }
+.uc-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.55; max-width: 700px; }
+.uc-attrs { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; position: relative; z-index: 1; padding-top: 20px; border-top: 1px solid var(--line); }
+.countries-section { background: var(--bg-card); border: 1px solid var(--line); padding: 28px; box-shadow: var(--shadow-sm); }
+.country-tabs { display: flex; flex-wrap: wrap; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--line); }
+.country-tab { padding: 11px 18px; font-family: var(--sans); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: none; background: transparent; color: var(--ink-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+.country-tab:hover { color: var(--ink); }
+.country-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.country-tab .flag { font-size: 16px; }
+.country-tab.add-tab { color: var(--ink-muted); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 13px; }
+.country-tab.add-tab:hover { color: var(--accent); }
+.country-panel { display: none; }
+.country-panel.active { display: block; animation: fadeIn 0.25s ease; }
+.country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 24px; }
+.country-field { background: var(--bg-card); padding: 16px 18px; }
+.country-field-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); margin-bottom: 6px; }
+.country-field-value { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); }
+.country-field-value.mono { font-family: var(--mono); font-size: 13px; font-weight: 400; }
+.value-breakdown { background: var(--bg-elevated); border: 1px solid var(--line); padding: 20px; }
+.value-breakdown-title { font-family: var(--serif); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-soft); margin-bottom: 14px; font-weight: 700; }
+.value-rows { display: flex; flex-direction: column; gap: 8px; }
+.value-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.value-row:last-child { border-bottom: none; padding-top: 12px; border-top: 2px solid var(--ink); font-weight: 600; }
+.value-row-label { font-size: 12px; color: var(--ink-soft); }
+.value-row-amount { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.value-row:last-child .value-row-amount { font-family: var(--serif); font-size: 18px; color: var(--accent); font-weight: 600; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(13,27,42,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 24px; }
+.modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
+.modal { background: var(--bg-card); border: 1px solid var(--line); box-shadow: var(--shadow-lg); width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; }
+.modal.small { max-width: 420px; }
+.modal-header { padding: 24px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; background: var(--bg-elevated); }
+.modal-title { font-family: var(--serif); font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+.modal-close { background: transparent; border: none; font-size: 22px; cursor: pointer; color: var(--ink-muted); padding: 4px 10px; line-height: 1; }
+.modal-close:hover { color: var(--accent); }
+.modal-body { padding: 28px; }
+.modal-body p { color: var(--ink-soft); margin-bottom: 16px; font-size: 13px; line-height: 1.5; }
+.modal-footer { padding: 18px 28px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 10px; background: var(--bg-elevated); }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.form-field { display: flex; flex-direction: column; }
+.form-field.full { grid-column: 1 / -1; }
+.form-field label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-muted); margin-bottom: 6px; font-weight: 600; }
+.form-field input, .form-field select, .form-field textarea { padding: 10px 12px; border: 1px solid var(--line-strong); background: #fff; font-family: inherit; font-size: 13px; color: var(--ink); outline: none; transition: border-color 0.15s; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+.form-section-title { font-family: var(--serif); font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin: 18px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-weight: 700; grid-column: 1 / -1; }
+.form-section-title:first-child { margin-top: 0; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #f5f3ee; padding: 14px 22px; border-left: 3px solid var(--accent); box-shadow: var(--shadow-lg); font-size: 13px; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 200; max-width: 380px; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-left-color: var(--success); }
+.toast.error { border-left-color: var(--accent); }
+.search-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.search-input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--line-strong); background: var(--bg-card); font-family: inherit; font-size: 13px; color: var(--ink); outline: none; }
+.search-input:focus { border-color: var(--accent); }
+.filter-select { padding: 10px 14px; border: 1px solid var(--line-strong); background: var(--bg-card); font-family: inherit; font-size: 12px; color: var(--ink-soft); outline: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+.banner { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 12px 18px; margin-bottom: 20px; font-size: 12px; color: var(--ink-soft); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.banner-info { background: var(--accent-soft); border-left-color: var(--accent); color: var(--ink-soft); }
+.banner b { color: var(--ink); }
+.password-input { width: 100%; padding: 12px 14px; border: 1px solid var(--line-strong); font-family: var(--mono); font-size: 14px; letter-spacing: 4px; text-align: center; outline: none; }
+.password-input:focus { border-color: var(--accent); }
+.hidden { display: none !important; }
+.dimmed { opacity: 0.5; pointer-events: none; }
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .uc-row { grid-template-columns: 1fr; }
+  .uc-row-status, .uc-row-value { text-align: left; }
+  main { padding: 20px 16px; }
+  .page-title { font-size: 28px; }
+  .topbar { padding: 12px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">F</div>
+    <div>
+      <span class="brand-name">Flagship Registry</span>
+      <span class="brand-sub">AI Use Cases · TOP 18</span>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <span class="mode-badge read" id="mode-badge">👁 Read-only</span>
+    <span class="save-indicator" id="save-indicator">—</span>
+    <button class="topbar-btn" onclick="openAuthModal()" id="auth-btn">🔒 Enable Edit</button>
+    <button class="topbar-btn" onclick="exportJSON()">↓ Export</button>
+    <button class="topbar-btn" onclick="importJSON()" id="import-btn-top" style="display:none">↑ Import</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+  </div>
+</div>
+
+<nav class="breadcrumb" id="breadcrumb">
+  <a onclick="showView('list')">TOP 18</a>
+</nav>
+
+<main>
+
+<section class="view active" id="view-list">
+  <div class="banner banner-info" id="welcome-banner">
+    <div>
+      <b>Lecture seule active.</b> Cliquez sur "Enable Edit" et entrez le mot de passe contributeur pour modifier les données. Les changements sont sauvegardés localement dans votre navigateur.
+    </div>
+    <button class="btn btn-sm btn-ghost" onclick="dismissBanner()">Compris</button>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">TOP 18 <span class="accent">Flagships</span></h1>
+      <p class="page-sub">AI Use Case Registry — strategic initiatives portfolio. Données sauvegardées automatiquement.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost edit-only" onclick="openFlagshipModal()" disabled>+ New flagship</button>
+      <button class="btn btn-primary" onclick="exportJSON()">Export JSON</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-label">Flagships</div><div class="stat-value" id="stat-flagships">—</div><div class="stat-trend" id="stat-flagships-trend">portfolio</div></div>
+    <div class="stat"><div class="stat-label">Total use cases</div><div class="stat-value" id="stat-usecases">—</div><div class="stat-trend">across portfolio</div></div>
+    <div class="stat"><div class="stat-label">AI Value (k€)</div><div class="stat-value" id="stat-value">—</div><div class="stat-trend">FY capped</div></div>
+    <div class="stat"><div class="stat-label">Countries</div><div class="stat-value" id="stat-countries">—</div><div class="stat-trend">in scope</div></div>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="search" placeholder="Search by name, sponsor, division…" oninput="renderList()">
+    <select class="filter-select" id="filter-division" onchange="renderList()"><option value="">All divisions</option></select>
+  </div>
+
+  <div class="flagship-grid" id="flagship-grid"></div>
+</section>
+
+<section class="view" id="view-flagship">
+  <div class="page-header">
+    <div>
+      <div class="flagship-rank" id="fd-rank"></div>
+      <h1 class="page-title" id="fd-name"></h1>
+      <p class="page-sub" id="fd-sub"></p>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-ghost edit-only" onclick="editFlagship()" disabled>✎ Edit</button>
+      <button class="btn btn-accent edit-only" onclick="openUseCaseModal()" disabled>+ Add use case</button>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <aside class="info-panel">
+      <div class="panel-title">Flagship Details</div>
+      <div class="info-list" id="fd-info"></div>
+    </aside>
+    <div>
+      <div class="section-header">
+        <h2 class="section-title">Use Cases <span class="count" id="fd-uc-count"></span></h2>
+      </div>
+      <div class="uc-list" id="fd-uc-list"></div>
+      <button class="add-row edit-only" onclick="openUseCaseModal()" disabled>+ Create new use case</button>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="view-usecase">
+  <div class="uc-header">
+    <div class="uc-header-top">
+      <div>
+        <h1 class="uc-title" id="uc-name"></h1>
+        <p class="uc-desc" id="uc-desc"></p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-ghost btn-sm edit-only" onclick="editUseCase()" disabled>✎ Edit</button>
+        <button class="btn btn-danger btn-sm edit-only" onclick="deleteUseCase()" disabled>Delete</button>
+      </div>
+    </div>
+    <div class="uc-attrs" id="uc-attrs"></div>
+  </div>
+
+  <div class="countries-section">
+    <div class="section-header">
+      <h2 class="section-title">Country Rollouts <span class="count" id="uc-country-count"></span></h2>
+      <button class="btn btn-accent btn-sm edit-only" onclick="openCountryModal()" disabled>+ Add country</button>
+    </div>
+    <div class="country-tabs" id="country-tabs"></div>
+    <div id="country-panels"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="modal-auth">
+  <div class="modal small">
+    <div class="modal-header">
+      <h2 class="modal-title" id="auth-title">Contributor Access</h2>
+      <button class="modal-close" onclick="closeModal('modal-auth')">×</button>
+    </div>
+    <div class="modal-body">
+      <p>Saisissez le mot de passe contributeur pour activer le mode édition.</p>
+      <input type="password" class="password-input" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') tryAuth()">
+      <p style="font-size: 11px; color: var(--ink-muted); margin-top: 12px;">Le mot de passe par défaut est <code style="font-family:var(--mono);background:var(--bg-elevated);padding:2px 6px;">flagship2025</code>. Modifiable dans le code (constante <code style="font-family:var(--mono);">EDIT_PASSWORD</code>).</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-auth')">Cancel</button>
+      <button class="btn btn-primary" onclick="tryAuth()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLAGSHIP MODAL -->
+<div class="modal-overlay" id="modal-flagship">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="mf-title">New Flagship</h2>
+      <button class="modal-close" onclick="closeModal('modal-flagship')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field full"><label>Name</label><input type="text" id="mf-name"></div>
+        <div class="form-field full"><label>Description</label><textarea id="mf-description"></textarea></div>
+        <div class="form-field"><label>Sponsor</label><input type="text" id="mf-sponsor"></div>
+        <div class="form-field"><label>AI Use Case Owner</label><input type="text" id="mf-owner"></div>
+        <div class="form-field"><label>Division</label><input type="text" id="mf-division"></div>
+        <div class="form-field"><label>Sub Division</label><input type="text" id="mf-subdivision"></div>
+        <div class="form-field"><label>Point of Contact</label><input type="text" id="mf-poc"></div>
+        <div class="form-field"><label>AI Business Analyst</label><input type="text" id="mf-analyst"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-flagship')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFlagship()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- USE CASE MODAL -->
+<div class="modal-overlay" id="modal-usecase">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="muc-title">New Use Case</h2>
+      <button class="modal-close" onclick="closeModal('modal-usecase')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-section-title">General</div>
+        <div class="form-field full"><label>Name</label><input type="text" id="muc-name"></div>
+        <div class="form-field full"><label>Use Case Description</label><textarea id="muc-description"></textarea></div>
+        <div class="form-field"><label>Pole</label><input type="text" id="muc-pole"></div>
+        <div class="form-field"><label>Entity</label><input type="text" id="muc-entity"></div>
+        <div class="form-field"><label>AI Act Category</label>
+          <select id="muc-aiact"><option>Minimal Risk</option><option>Limited Risk</option><option>High Risk</option><option>Unacceptable Risk</option></select>
+        </div>
+        <div class="form-field"><label>Technology</label><input type="text" id="muc-technology"></div>
+        <div class="form-field"><label>Platform</label><input type="text" id="muc-platform"></div>
+        <div class="form-field"><label>Main AI Brick</label><input type="text" id="muc-brick"></div>
+        <div class="form-field"><label>AI Domain</label><input type="text" id="muc-domain"></div>
+        <div class="form-field"><label>AI Category</label><input type="text" id="muc-category"></div>
+        <div class="form-field"><label>Sourcing</label>
+          <select id="muc-sourcing"><option>In-house</option><option>Vendor</option><option>Hybrid</option><option>Open Source</option></select>
+        </div>
+        <div class="form-field"><label>IA Value Total (k€)</label><input type="number" id="muc-iavalue"></div>
+        <div class="form-field full"><label>Model dev contributors</label><input type="text" id="muc-contributors"></div>
+        <div class="form-field"><label>Pilot Country</label><input type="text" id="muc-pilot"></div>
+        <div class="form-field"><label>ITSVC 2</label><input type="text" id="muc-itsvc"></div>
+        <div class="form-field"><label>Date ITSVC</label><input type="date" id="muc-date-itsvc"></div>
+        <div class="form-field"><label>Last gate passed</label><input type="text" id="muc-gate"></div>
+        <div class="form-field"><label>Date Last gate passed</label><input type="date" id="muc-date-gate"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-usecase')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUseCase()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTRY MODAL -->
+<div class="modal-overlay" id="modal-country">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="mc-title">Add Country Rollout</h2>
+      <button class="modal-close" onclick="closeModal('modal-country')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-section-title">Country & Timing</div>
+        <div class="form-field"><label>Country</label>
+          <select id="mc-country">
+            <option>France</option><option>Italy</option><option>Belgium</option>
+            <option>Luxembourg</option><option>Poland</option><option>Czech Republic</option>
+            <option>Romania</option><option>Morocco</option><option>Algeria</option>
+            <option>Tunisia</option><option>Russia</option><option>Ukraine</option>
+            <option>Côte d'Ivoire</option><option>Senegal</option><option>Egypt</option>
+            <option>Germany</option><option>Spain</option><option>UK</option>
+            <option>Switzerland</option><option>Netherlands</option><option>USA</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Year</label><input type="number" id="mc-year" value="2025"></div>
+        <div class="form-field"><label>Status</label>
+          <select id="mc-status"><option>Draft</option><option>Pilot</option><option>Industrialized</option><option>Decommissioned</option></select>
+        </div>
+        <div class="form-field"><label>Production date</label><input type="date" id="mc-prod"></div>
+
+        <div class="form-section-title">AI Value Breakdown (k€, FULL YEAR)</div>
+        <div class="form-field"><label>AI Value capped</label><input type="number" id="mc-val-capped"></div>
+        <div class="form-field"><label>Net Banking Impact</label><input type="number" id="mc-val-nbi"></div>
+        <div class="form-field"><label>Gross Cost Savings</label><input type="number" id="mc-val-gcs"></div>
+        <div class="form-field"><label>Cost Avoidance</label><input type="number" id="mc-val-ca"></div>
+        <div class="form-field"><label>Cost of Risk</label><input type="number" id="mc-val-cor"></div>
+        <div class="form-field"><label>RWA Savings</label><input type="number" id="mc-val-rwa"></div>
+        <div class="form-field"><label>AI Value Measure Type</label>
+          <select id="mc-measure"><option>Estimated</option><option>Measured</option><option>Modeled</option></select>
+        </div>
+
+        <div class="form-section-title">Rollout & Ownership</div>
+        <div class="form-field"><label>Rollout</label>
+          <select id="mc-rollout"><option>Local</option><option>Regional</option><option>Global</option></select>
+        </div>
+        <div class="form-field"><label>MRR use case category</label><input type="text" id="mc-mrr-cat"></div>
+        <div class="form-field"><label>MRR</label><input type="text" id="mc-mrr"></div>
+        <div class="form-field"><label>AI Use Case Owner</label><input type="text" id="mc-owner"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-country')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCountry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =========================================================
+// CONFIGURATION — ÉDITABLE
+// =========================================================
+const EDIT_PASSWORD = 'flagship2025'; // Mot de passe contributeur (à changer)
+const STORAGE_KEY = 'flagship_top18_data_v1';
+const STORAGE_META_KEY = 'flagship_top18_meta_v1';
+const AUTO_SAVE_DEBOUNCE = 400; // ms
+
+// =========================================================
+// CONSTANTS
+// =========================================================
+const FLAG_FLAGS = { 'France':'🇫🇷','Italy':'🇮🇹','Belgium':'🇧🇪','Luxembourg':'🇱🇺','Poland':'🇵🇱','Czech Republic':'🇨🇿','Romania':'🇷🇴','Morocco':'🇲🇦','Algeria':'🇩🇿','Tunisia':'🇹🇳','Russia':'🇷🇺','Ukraine':'🇺🇦',"Côte d'Ivoire":'🇨🇮','Senegal':'🇸🇳','Egypt':'🇪🇬','Germany':'🇩🇪','Spain':'🇪🇸','UK':'🇬🇧','Switzerland':'🇨🇭','Netherlands':'🇳🇱','USA':'🇺🇸' };
+
+// =========================================================
+// DEFAULT MOCK DATA (only loaded if storage is empty)
+// =========================================================
+const DEFAULT_DATA = [
+  { id:'F01', rank:1, name:'KYC Acceleration', description:'Automated KYC document review and risk scoring leveraging multimodal AI for retail and SME clients.', sponsor:'Group Compliance', owner:'M. Lefevre', division:'GBIS', subdivision:'Financial Crime', poc:'A. Moreau', analyst:'C. Dubois', useCases:[
+    { id:'U01F01', name:'Document Extraction Pipeline', description:'Extract structured KYC fields from ID, proof of residency, and corporate documents using OCR + LLM.', pole:'Operations', entity:'SG Group', aiAct:'High Risk', technology:'LLM + OCR', platform:'Azure ML', brick:'Document AI', domain:'NLP', category:'Information Extraction', sourcing:'Hybrid', iaValue:4200, contributors:'AI4Compliance Team', pilot:'France', itsvc:'ITSVC-1042', dateItsvc:'2024-03-15', gate:'Gate 4', dateGate:'2024-09-20', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2024-10-01', valCapped:2800, valNbi:0, valGcs:2200, valCa:600, valCor:0, valRwa:0, measure:'Measured', rollout:'Local', mrrCat:'Operational Efficiency', mrr:'MRR-FR-2024-018', owner:'M. Lefevre' },
+      { country:'Italy', year:2025, status:'Pilot', prodDate:'2025-03-15', valCapped:900, valNbi:0, valGcs:700, valCa:200, valCor:0, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Operational Efficiency', mrr:'MRR-IT-2025-003', owner:'G. Rossi' }
+    ]},
+    { id:'U02F01', name:'Risk Scoring Engine', description:'PEP/sanction screening and ML-based risk scoring of new client onboardings.', pole:'Compliance', entity:'SG Group', aiAct:'High Risk', technology:'Gradient Boosting', platform:'Databricks', brick:'Predictive AI', domain:'Tabular ML', category:'Classification', sourcing:'In-house', iaValue:3100, contributors:'Risk Analytics', pilot:'France', itsvc:'ITSVC-1078', dateItsvc:'2024-06-10', gate:'Gate 3', dateGate:'2025-01-12', countries:[
+      { country:'France', year:2025, status:'Pilot', prodDate:'2025-02-01', valCapped:1500, valNbi:0, valGcs:0, valCa:0, valCor:1500, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Risk Management', mrr:'MRR-FR-2025-006', owner:'M. Lefevre' }
+    ]}
+  ]},
+  { id:'F02', rank:2, name:'Credit Decision Copilot', description:'Generative AI copilot for credit analysts: summarization, covenant extraction, peer benchmarking on corporate deals.', sponsor:'GLBA', owner:'J. Bernard', division:'Corporate & Investment Banking', subdivision:'Credit Risk', poc:'P. Lambert', analyst:'L. Garnier', useCases:[
+    { id:'U01F02', name:'Credit Memo Summarization', description:'Summarize 50-page credit memos into key risk factors and exposures.', pole:'Front Office', entity:'GLBA', aiAct:'Limited Risk', technology:'LLM (GPT-4 class)', platform:'Internal LLM Gateway', brick:'Generative AI', domain:'NLP', category:'Summarization', sourcing:'Vendor', iaValue:5400, contributors:'GenAI Lab', pilot:'France', itsvc:'ITSVC-1130', dateItsvc:'2024-09-01', gate:'Gate 4', dateGate:'2025-02-28', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2025-03-01', valCapped:3200, valNbi:1800, valGcs:1400, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Global', mrrCat:'Productivity', mrr:'MRR-FR-2025-011', owner:'J. Bernard' },
+      { country:'Luxembourg', year:2025, status:'Pilot', prodDate:'2025-05-15', valCapped:600, valNbi:400, valGcs:200, valCa:0, valCor:0, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Productivity', mrr:'MRR-LU-2025-002', owner:'F. Schmit' }
+    ]}
+  ]},
+  { id:'F03', rank:3, name:'Markets AI Trading Assistant', description:'Real-time AI assistant for FX and rates traders: news triage, anomaly detection, and execution suggestion.', sponsor:'Global Markets', owner:'S. Nakamura', division:'Global Markets', subdivision:'FX & Rates', poc:'R. Chen', analyst:'A. Petit', useCases:[
+    { id:'U01F03', name:'News Triage Engine', description:'Cluster, dedupe and score market-moving news in real time.', pole:'Trading Floor', entity:'GLBA Markets', aiAct:'Limited Risk', technology:'Transformers + Streaming', platform:'AWS Kinesis + SageMaker', brick:'NLP Pipeline', domain:'NLP', category:'Information Retrieval', sourcing:'In-house', iaValue:6800, contributors:'Markets AI Squad', pilot:'France', itsvc:'ITSVC-1201', dateItsvc:'2024-11-12', gate:'Gate 4', dateGate:'2025-04-08', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2025-04-10', valCapped:4500, valNbi:4500, valGcs:0, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Global', mrrCat:'Revenue', mrr:'MRR-FR-2025-019', owner:'S. Nakamura' }
+    ]}
+  ]},
+  { id:'F04', rank:4, name:'Retail Customer 360', description:'Unified customer view and next-best-action engine across digital and branch channels.', sponsor:'Retail Banking', owner:'C. Martin', division:'Retail Banking', subdivision:'Customer Experience', poc:'V. Roux', analyst:'M. Faure', useCases:[
+    { id:'U01F04', name:'Next-Best-Action Recommender', description:'Personalized product recommendations across mobile, web and branch.', pole:'Retail', entity:'SG Retail FR', aiAct:'Limited Risk', technology:'Two-Tower DL', platform:'GCP Vertex AI', brick:'Recommendation', domain:'Recsys', category:'Personalization', sourcing:'In-house', iaValue:4900, contributors:'Personalization Lab', pilot:'France', itsvc:'ITSVC-1156', dateItsvc:'2024-08-20', gate:'Gate 4', dateGate:'2025-01-30', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2025-02-15', valCapped:3400, valNbi:3400, valGcs:0, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Local', mrrCat:'Revenue', mrr:'MRR-FR-2025-009', owner:'C. Martin' }
+    ]}
+  ]},
+  { id:'F05', rank:5, name:'AML Transaction Monitoring', description:'Next-gen anti-money laundering alerting with graph neural networks and behavioral analytics.', sponsor:'Group Compliance', owner:'A. Kovac', division:'GBIS', subdivision:'AML', poc:'N. Olsen', analyst:'T. Weiss', useCases:[
+    { id:'U01F05', name:'Graph-Based Alert Triage', description:'GNN-based suspicious activity scoring on transaction graphs.', pole:'Compliance', entity:'SG Group', aiAct:'High Risk', technology:'Graph Neural Networks', platform:'Databricks', brick:'Predictive AI', domain:'Graph ML', category:'Anomaly Detection', sourcing:'In-house', iaValue:5200, contributors:'Graph AI Team', pilot:'France', itsvc:'ITSVC-1210', dateItsvc:'2024-12-01', gate:'Gate 3', dateGate:'2025-03-22', countries:[
+      { country:'France', year:2025, status:'Pilot', prodDate:'2025-05-01', valCapped:2100, valNbi:0, valGcs:0, valCa:0, valCor:2100, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Risk Management', mrr:'MRR-FR-2025-014', owner:'A. Kovac' }
+    ]}
+  ]},
+  { id:'F06', rank:6, name:'IT Ops AI', description:'AIOps platform for incident prediction, root-cause analysis and intelligent ticket routing.', sponsor:'Group IT', owner:'D. Klein', division:'Group IT', subdivision:'Infrastructure', poc:'E. Tran', analyst:'O. Mendes', useCases:[
+    { id:'U01F06', name:'Incident Auto-Routing', description:'Classify and route IT tickets to the right L2/L3 team.', pole:'IT Ops', entity:'SG Group', aiAct:'Minimal Risk', technology:'BERT Classifier', platform:'Azure ML', brick:'NLP Classifier', domain:'NLP', category:'Classification', sourcing:'In-house', iaValue:1800, contributors:'AIOps Squad', pilot:'France', itsvc:'ITSVC-1067', dateItsvc:'2024-05-10', gate:'Gate 4', dateGate:'2024-10-15', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2024-11-01', valCapped:1400, valNbi:0, valGcs:1400, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Global', mrrCat:'Operational Efficiency', mrr:'MRR-FR-2024-029', owner:'D. Klein' }
+    ]}
+  ]},
+  { id:'F07', rank:7, name:'ESG Intelligence', description:'AI-driven ESG scoring and controversy detection for portfolio and counterparty analysis.', sponsor:'Sustainability', owner:'I. Aliyev', division:'Group Strategy', subdivision:'Sustainability', poc:'B. Costa', analyst:'H. Park', useCases:[
+    { id:'U01F07', name:'ESG Controversy Detection', description:'Detect ESG controversies from news and regulatory feeds.', pole:'Sustainability', entity:'SG Group', aiAct:'Limited Risk', technology:'LLM + Web Scraping', platform:'AWS', brick:'NLP Pipeline', domain:'NLP', category:'Classification', sourcing:'Hybrid', iaValue:2200, contributors:'ESG AI Team', pilot:'France', itsvc:'ITSVC-1188', dateItsvc:'2024-10-05', gate:'Gate 3', dateGate:'2025-02-18', countries:[]}
+  ]},
+  { id:'F08', rank:8, name:'Document Intelligence Hub', description:'Centralized document understanding service: contracts, statements, regulatory filings.', sponsor:'Operations', owner:'F. Boucher', division:'GBIS', subdivision:'Operations', poc:'K. Iyer', analyst:'D. Souza', useCases:[
+    { id:'U01F08', name:'Contract Clause Extraction', description:'Extract key clauses from ISDA, GMRA and bilateral contracts.', pole:'Legal Ops', entity:'SG Group', aiAct:'Limited Risk', technology:'LLM Fine-tuned', platform:'Internal LLM Gateway', brick:'Document AI', domain:'NLP', category:'Information Extraction', sourcing:'In-house', iaValue:3700, contributors:'DocAI Team', pilot:'France', itsvc:'ITSVC-1145', dateItsvc:'2024-07-22', gate:'Gate 4', dateGate:'2024-12-15', countries:[]}
+  ]},
+  { id:'F09', rank:9, name:'Fraud Shield', description:'Real-time fraud detection across cards, transfers and account openings.', sponsor:'Risk', owner:'R. Hoffmann', division:'Retail Banking', subdivision:'Fraud', poc:'L. Yamada', analyst:'P. Silva', useCases:[
+    { id:'U01F09', name:'Card Fraud Real-Time Scoring', description:'Sub-100ms fraud scoring on card authorizations.', pole:'Fraud', entity:'SG Retail FR', aiAct:'High Risk', technology:'Gradient Boosting', platform:'On-prem GPU Cluster', brick:'Predictive AI', domain:'Tabular ML', category:'Anomaly Detection', sourcing:'In-house', iaValue:6100, contributors:'Fraud AI Team', pilot:'France', itsvc:'ITSVC-1098', dateItsvc:'2024-06-30', gate:'Gate 4', dateGate:'2024-11-20', countries:[]}
+  ]},
+  { id:'F10', rank:10, name:'HR Talent AI', description:'AI-assisted CV screening, internal mobility matching and skills mapping.', sponsor:'Group HR', owner:'V. Almeida', division:'Group HR', subdivision:'Talent', poc:'S. Kone', analyst:'E. Ozturk', useCases:[
+    { id:'U01F10', name:'Internal Mobility Matcher', description:'Recommend internal job opportunities to employees based on skills.', pole:'HR', entity:'SG Group', aiAct:'Limited Risk', technology:'Sentence Transformers', platform:'Azure ML', brick:'Embedding Search', domain:'NLP', category:'Matching', sourcing:'In-house', iaValue:1500, contributors:'HR Analytics', pilot:'France', itsvc:'ITSVC-1175', dateItsvc:'2024-09-18', gate:'Gate 3', dateGate:'2025-02-05', countries:[]}
+  ]},
+  { id:'F11', rank:11, name:'Treasury & ALM Optimizer', description:'AI-driven liquidity forecasting and balance sheet optimization for ALM teams.', sponsor:'Treasury', owner:'M. Eriksson', division:'Finance', subdivision:'ALM', poc:'T. Andersson', analyst:'J. Lindqvist', useCases:[
+    { id:'U01F11', name:'Liquidity Forecasting', description:'30-day rolling liquidity forecast with anomaly detection.', pole:'Treasury', entity:'SG Group', aiAct:'Minimal Risk', technology:'Time Series DL', platform:'Databricks', brick:'Forecasting', domain:'Time Series', category:'Forecasting', sourcing:'In-house', iaValue:2800, contributors:'Treasury AI', pilot:'France', itsvc:'ITSVC-1163', dateItsvc:'2024-08-10', gate:'Gate 3', dateGate:'2025-01-15', countries:[]}
+  ]},
+  { id:'F12', rank:12, name:'Wealth Advisor Copilot', description:'Generative AI assistant for private bankers: portfolio commentary, client preparation, regulatory checks.', sponsor:'Private Banking', owner:'L. Fontaine', division:'Wealth Management', subdivision:'Private Banking', poc:'M. Yilmaz', analyst:'N. Rahman', useCases:[
+    { id:'U01F12', name:'Portfolio Commentary Generator', description:'Auto-generate monthly client portfolio reviews.', pole:'Private Bank', entity:'SG PB', aiAct:'Limited Risk', technology:'LLM (GPT-4 class)', platform:'Internal LLM Gateway', brick:'Generative AI', domain:'NLP', category:'Generation', sourcing:'Vendor', iaValue:3300, contributors:'GenAI Lab', pilot:'Luxembourg', itsvc:'ITSVC-1192', dateItsvc:'2024-10-20', gate:'Gate 3', dateGate:'2025-03-10', countries:[]}
+  ]},
+  { id:'F13', rank:13, name:'Insurance Claims AI', description:'Automated claims triage, fraud detection and damage assessment.', sponsor:'Insurance', owner:'P. Novak', division:'Insurance', subdivision:'Claims', poc:'A. Vargas', analyst:'C. Romero', useCases:[
+    { id:'U01F13', name:'Claims Triage', description:'Auto-classify and prioritize insurance claims at intake.', pole:'Claims', entity:'SG Insurance', aiAct:'High Risk', technology:'Multimodal LLM', platform:'Azure ML', brick:'Document AI', domain:'Multimodal', category:'Classification', sourcing:'Hybrid', iaValue:2600, contributors:'Insurance AI', pilot:'France', itsvc:'ITSVC-1207', dateItsvc:'2024-11-25', gate:'Gate 3', dateGate:'2025-04-02', countries:[]}
+  ]},
+  { id:'F14', rank:14, name:'Regulatory Reporting AI', description:'Automated extraction, validation and pre-filling of regulatory reports (FINREP, COREP, etc.).', sponsor:'Finance', owner:'B. Vargas', division:'Finance', subdivision:'Regulatory Reporting', poc:'M. Diallo', analyst:'V. Ahmed', useCases:[
+    { id:'U01F14', name:'COREP Auto-Validation', description:'Validate COREP submissions with ML-based anomaly detection.', pole:'Finance', entity:'SG Group', aiAct:'High Risk', technology:'Anomaly Detection ML', platform:'On-prem', brick:'Predictive AI', domain:'Tabular ML', category:'Anomaly Detection', sourcing:'In-house', iaValue:2900, contributors:'RegReporting AI', pilot:'France', itsvc:'ITSVC-1199', dateItsvc:'2024-11-08', gate:'Gate 3', dateGate:'2025-03-30', countries:[]}
+  ]},
+  { id:'F15', rank:15, name:'Cybersecurity AI', description:'AI-powered SOC: threat hunting, phishing detection, insider threat analytics.', sponsor:'Group Security', owner:'T. Berg', division:'Group IT', subdivision:'Cybersecurity', poc:'H. Mensah', analyst:'O. Karimov', useCases:[
+    { id:'U01F15', name:'Phishing Email Detection', description:'Detect phishing in inbound corporate email with vision + NLP models.', pole:'CyberSec', entity:'SG Group', aiAct:'Limited Risk', technology:'Multimodal Classifier', platform:'Azure ML', brick:'Multimodal AI', domain:'Multimodal', category:'Classification', sourcing:'In-house', iaValue:2400, contributors:'CyberAI Squad', pilot:'France', itsvc:'ITSVC-1182', dateItsvc:'2024-09-30', gate:'Gate 4', dateGate:'2025-02-22', countries:[]}
+  ]},
+  { id:'F16', rank:16, name:'Climate Stress Tests AI', description:'AI models for climate scenario analysis and physical/transition risk stress testing.', sponsor:'Risk', owner:'C. Iversen', division:'Risk', subdivision:'Climate Risk', poc:'A. Petrov', analyst:'L. Singh', useCases:[
+    { id:'U01F16', name:'Physical Risk Scoring', description:'Score real-estate portfolio physical climate risk.', pole:'Climate Risk', entity:'SG Group', aiAct:'Limited Risk', technology:'Geo-spatial ML', platform:'GCP Vertex AI', brick:'Predictive AI', domain:'Geospatial', category:'Scoring', sourcing:'In-house', iaValue:1900, contributors:'Climate AI', pilot:'France', itsvc:'ITSVC-1218', dateItsvc:'2024-12-15', gate:'Gate 2', dateGate:'2025-04-25', countries:[]}
+  ]},
+  { id:'F17', rank:17, name:'Customer Service Voice AI', description:'Voice AI for inbound retail call centers: intent detection, automated responses, post-call analytics.', sponsor:'Retail Banking', owner:'I. Renaud', division:'Retail Banking', subdivision:'Customer Service', poc:'D. Singh', analyst:'R. Costa', useCases:[
+    { id:'U01F17', name:'Post-Call Summarization', description:'Auto-summarize agent-customer calls and detect compliance issues.', pole:'Customer Service', entity:'SG Retail FR', aiAct:'Limited Risk', technology:'Speech-to-Text + LLM', platform:'Azure', brick:'Speech AI', domain:'Speech', category:'Transcription', sourcing:'Vendor', iaValue:2100, contributors:'Voice AI Team', pilot:'France', itsvc:'ITSVC-1213', dateItsvc:'2024-12-05', gate:'Gate 3', dateGate:'2025-04-12', countries:[]}
+  ]},
+  { id:'F18', rank:18, name:'Data Governance AI', description:'AI for metadata enrichment, data quality monitoring and lineage discovery across the group.', sponsor:'CDO Office', owner:'S. Andrade', division:'Group Data', subdivision:'Data Governance', poc:'F. Costa', analyst:'M. Khan', useCases:[
+    { id:'U01F18', name:'Auto Data Cataloging', description:'Auto-classify and tag datasets with business metadata.', pole:'Data Governance', entity:'SG Group', aiAct:'Minimal Risk', technology:'LLM + Schema Inference', platform:'Internal LLM Gateway', brick:'Generative AI', domain:'NLP', category:'Classification', sourcing:'In-house', iaValue:1700, contributors:'CDO Data Team', pilot:'France', itsvc:'ITSVC-1224', dateItsvc:'2025-01-15', gate:'Gate 2', dateGate:'2025-04-30', countries:[]}
+  ]}
+];
+
+// =========================================================
+// STORAGE LAYER (with localStorage fallback to in-memory)
+// =========================================================
+let memoryStore = null; // fallback if localStorage unavailable
+let storageWorks = true;
+
+try {
+  const testKey = '__test_' + Date.now();
+  localStorage.setItem(testKey, '1');
+  localStorage.removeItem(testKey);
+} catch(e) {
+  storageWorks = false;
+  console.warn('localStorage indisponible — utilisation du stockage en mémoire (les données seront perdues au rechargement)');
+}
+
+function storageGet(key) {
+  if (!storageWorks) return memoryStore?.[key] || null;
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+
+function storageSet(key, value) {
+  if (!storageWorks) {
+    if (!memoryStore) memoryStore = {};
+    memoryStore[key] = value;
+    return true;
+  }
+  try { localStorage.setItem(key, value); return true; } catch(e) {
+    toast('⚠ Sauvegarde locale échouée (quota dépassé ?)', 'error');
+    return false;
+  }
+}
+
+function loadData() {
+  const raw = storageGet(STORAGE_KEY);
+  if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) throw new Error('Invalid stored data');
+    return parsed;
+  } catch(e) {
+    console.error('Données corrompues, rechargement des données par défaut');
+    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+let saveTimer = null;
+function persist() {
+  clearTimeout(saveTimer);
+  setSaveIndicator('saving');
+  saveTimer = setTimeout(() => {
+    const ok = storageSet(STORAGE_KEY, JSON.stringify(state.flagships));
+    const meta = { lastSaved: new Date().toISOString(), version: 1 };
+    storageSet(STORAGE_META_KEY, JSON.stringify(meta));
+    setSaveIndicator(ok ? 'saved' : 'error');
+  }, AUTO_SAVE_DEBOUNCE);
+}
+
+function setSaveIndicator(status) {
+  const el = document.getElementById('save-indicator');
+  if (!el) return;
+  if (status === 'saving') { el.textContent = '⟳ Saving…'; el.className = 'save-indicator'; }
+  else if (status === 'saved') {
+    const now = new Date();
+    el.textContent = `✓ Saved ${now.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+    el.className = 'save-indicator saved';
+  } else if (status === 'error') { el.textContent = '⚠ Save failed'; el.className = 'save-indicator'; }
+  else if (status === 'init') {
+    const meta = storageGet(STORAGE_META_KEY);
+    if (meta) {
+      try {
+        const m = JSON.parse(meta);
+        const d = new Date(m.lastSaved);
+        el.textContent = `✓ Saved ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`;
+        el.className = 'save-indicator saved';
+      } catch(e) { el.textContent = '—'; }
+    } else { el.textContent = '—'; }
+  }
+}
+
+// =========================================================
+// STATE
+// =========================================================
+let state = {
+  flagships: loadData(),
+  currentFlagshipId: null,
+  currentUseCaseId: null,
+  currentCountry: null,
+  editingFlagshipId: null,
+  editingUseCaseId: null,
+  editingCountry: null,
+  editMode: false
+};
+
+// =========================================================
+// HELPERS
+// =========================================================
+function fmt(n) { return n == null || n === '' ? '—' : Number(n).toLocaleString('fr-FR'); }
+function fmtK(n) { return n == null || n === '' ? '—' : Number(n).toLocaleString('fr-FR') + ' k€'; }
+function getFlagship(id) { return state.flagships.find(f => f.id === id); }
+function getUseCase(flagship, ucId) { return flagship?.useCases.find(u => u.id === ucId); }
+function uid(prefix) { return prefix + '-' + Math.random().toString(36).slice(2, 8).toUpperCase(); }
+function esc(s) { return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => t.className = 'toast', 2800);
+}
+
+// =========================================================
+// AUTH / EDIT MODE
+// =========================================================
+function openAuthModal() {
+  if (state.editMode) {
+    if (confirm('Verrouiller à nouveau le mode édition ?')) {
+      state.editMode = false;
+      applyEditMode();
+    }
+    return;
+  }
+  document.getElementById('auth-password').value = '';
+  document.getElementById('modal-auth').classList.add('active');
+  setTimeout(() => document.getElementById('auth-password').focus(), 100);
+}
+
+function tryAuth() {
+  const pw = document.getElementById('auth-password').value;
+  if (pw === EDIT_PASSWORD) {
+    state.editMode = true;
+    applyEditMode();
+    closeModal('modal-auth');
+    toast('🔓 Mode édition activé', 'success');
+  } else {
+    toast('Mot de passe incorrect', 'error');
+    document.getElementById('auth-password').value = '';
+  }
+}
+
+function applyEditMode() {
+  const badge = document.getElementById('mode-badge');
+  const authBtn = document.getElementById('auth-btn');
+  const importBtnTop = document.getElementById('import-btn-top');
+  if (state.editMode) {
+    badge.textContent = '✎ Editing';
+    badge.className = 'mode-badge edit';
+    authBtn.textContent = '🔓 Lock';
+    importBtnTop.style.display = '';
+  } else {
+    badge.textContent = '👁 Read-only';
+    badge.className = 'mode-badge read';
+    authBtn.textContent = '🔒 Enable Edit';
+    importBtnTop.style.display = 'none';
+  }
+  document.querySelectorAll('.edit-only').forEach(el => {
+    el.disabled = !state.editMode;
+    el.classList.toggle('dimmed', !state.editMode);
+  });
+}
+
+function dismissBanner() {
+  document.getElementById('welcome-banner').style.display = 'none';
+  storageSet('flagship_banner_dismissed', '1');
+}
+
+// =========================================================
+// VIEW ROUTING
+// =========================================================
+function showView(view, opts) {
+  opts = opts || {};
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  if (view === 'list') {
+    document.getElementById('view-list').classList.add('active');
+    renderList();
+    setBreadcrumb([{label:'TOP 18', current:true}]);
+  } else if (view === 'flagship') {
+    state.currentFlagshipId = opts.flagshipId;
+    document.getElementById('view-flagship').classList.add('active');
+    renderFlagship();
+  } else if (view === 'usecase') {
+    state.currentFlagshipId = opts.flagshipId;
+    state.currentUseCaseId = opts.useCaseId;
+    state.currentCountry = null;
+    document.getElementById('view-usecase').classList.add('active');
+    renderUseCase();
+  }
+  applyEditMode();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function setBreadcrumb(items) {
+  const bc = document.getElementById('breadcrumb');
+  bc.innerHTML = '';
+  items.forEach((it, i) => {
+    if (i > 0) {
+      const sep = document.createElement('span');
+      sep.className = 'sep'; sep.textContent = '/';
+      bc.appendChild(sep);
+    }
+    const el = document.createElement(it.current ? 'span' : 'a');
+    el.textContent = it.label;
+    if (it.current) el.className = 'current';
+    if (it.action) el.onclick = it.action;
+    bc.appendChild(el);
+  });
+}
+
+// =========================================================
+// RENDER: LIST
+// =========================================================
+function renderList() {
+  const total = state.flagships.length;
+  let allUC = 0, allValue = 0;
+  const countriesSet = new Set();
+  state.flagships.forEach(f => {
+    allUC += f.useCases.length;
+    f.useCases.forEach(uc => {
+      uc.countries.forEach(c => {
+        countriesSet.add(c.country);
+        allValue += (c.valCapped || 0);
+      });
+    });
+  });
+  document.getElementById('stat-flagships').textContent = total;
+  document.getElementById('stat-usecases').textContent = allUC;
+  document.getElementById('stat-value').textContent = fmt(allValue);
+  document.getElementById('stat-countries').textContent = countriesSet.size;
+
+  const divisions = [...new Set(state.flagships.map(f => f.division))].sort();
+  const sel = document.getElementById('filter-division');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All divisions</option>' + divisions.map(d => `<option value="${esc(d)}">${esc(d)}</option>`).join('');
+  sel.value = cur;
+
+  const search = document.getElementById('search').value.toLowerCase();
+  const division = sel.value;
+
+  const filtered = state.flagships.filter(f => {
+    if (division && f.division !== division) return false;
+    if (search) {
+      const hay = `${f.name} ${f.description} ${f.sponsor} ${f.owner} ${f.division} ${f.subdivision}`.toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  const grid = document.getElementById('flagship-grid');
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1; padding:60px; text-align:center; color:var(--ink-muted); font-style:italic;">Aucun flagship ne correspond à votre recherche.</div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(f => {
+    const totalUcValue = f.useCases.reduce((sum, uc) => sum + uc.countries.reduce((s, c) => s + (c.valCapped || 0), 0), 0);
+    return `
+      <article class="flagship-card" onclick="showView('flagship', {flagshipId:'${esc(f.id)}'})">
+        <div class="flagship-rank">TOP ${String(f.rank).padStart(2,'0')}</div>
+        <h3 class="flagship-name">${esc(f.name)}</h3>
+        <p class="flagship-desc">${esc(f.description)}</p>
+        <div class="flagship-meta">
+          <span class="chip accent">${esc(f.division)}</span>
+          <span class="chip">${esc(f.subdivision)}</span>
+        </div>
+        <div class="flagship-footer">
+          <span>${f.useCases.length} <span class="uc-count">use case${f.useCases.length>1?'s':''}</span></span>
+          <span class="chip gold">${fmt(totalUcValue)} k€</span>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+// =========================================================
+// RENDER: FLAGSHIP
+// =========================================================
+function renderFlagship() {
+  const f = getFlagship(state.currentFlagshipId);
+  if (!f) return showView('list');
+  document.getElementById('fd-rank').textContent = `TOP ${String(f.rank).padStart(2,'0')}`;
+  document.getElementById('fd-name').textContent = f.name;
+  document.getElementById('fd-sub').textContent = f.description;
+
+  document.getElementById('fd-info').innerHTML = `
+    <div class="info-item"><div class="info-label">Sponsor</div><div class="info-value">${esc(f.sponsor)}</div></div>
+    <div class="info-item"><div class="info-label">AI Use Case Owner</div><div class="info-value">${esc(f.owner)}</div></div>
+    <div class="info-item"><div class="info-label">Division</div><div class="info-value">${esc(f.division)}</div></div>
+    <div class="info-item"><div class="info-label">Sub Division</div><div class="info-value">${esc(f.subdivision)}</div></div>
+    <div class="info-item"><div class="info-label">Point of Contact</div><div class="info-value">${esc(f.poc)}</div></div>
+    <div class="info-item"><div class="info-label">AI Business Analyst</div><div class="info-value">${esc(f.analyst)}</div></div>
+    <div class="info-item"><div class="info-label">Flagship ID</div><div class="info-value mono">${esc(f.id)}</div></div>
+  `;
+
+  document.getElementById('fd-uc-count').textContent = `(${f.useCases.length})`;
+  const list = document.getElementById('fd-uc-list');
+  if (f.useCases.length === 0) {
+    list.innerHTML = `<div style="padding:30px; text-align:center; color:var(--ink-muted); font-style:italic; border:1px dashed var(--line-strong);">Aucun use case pour ce flagship.</div>`;
+  } else {
+    list.innerHTML = f.useCases.map(uc => {
+      const totalVal = uc.countries.reduce((s, c) => s + (c.valCapped || 0), 0);
+      const liveCount = uc.countries.filter(c => c.status === 'Industrialized').length;
+      const statusClass = liveCount > 0 ? 'live' : (uc.countries.some(c => c.status === 'Pilot') ? 'pilot' : 'draft');
+      const statusText = liveCount > 0 ? `${liveCount} live` : (uc.countries.length > 0 ? 'Pilot' : 'Draft');
+      const cntCountries = uc.countries.length;
+      return `
+        <div class="uc-row" onclick="showView('usecase', {flagshipId:'${esc(f.id)}', useCaseId:'${esc(uc.id)}'})">
+          <div class="uc-row-main">
+            <div class="uc-row-name">${esc(uc.name)}</div>
+            <div class="uc-row-desc">${esc(uc.description)}</div>
+          </div>
+          <div class="uc-row-status ${statusClass}">${statusText} · ${cntCountries} pays</div>
+          <div class="uc-row-value">${fmt(totalVal)} <small>k€ FY capped</small></div>
+        </div>`;
+    }).join('');
+  }
+
+  setBreadcrumb([
+    {label:'TOP 18', action:()=>showView('list')},
+    {label:f.name, current:true}
+  ]);
+}
+
+// =========================================================
+// RENDER: USE CASE
+// =========================================================
+function renderUseCase() {
+  const f = getFlagship(state.currentFlagshipId);
+  const uc = getUseCase(f, state.currentUseCaseId);
+  if (!uc) return showView('flagship', {flagshipId:state.currentFlagshipId});
+
+  document.getElementById('uc-name').textContent = uc.name;
+  document.getElementById('uc-desc').textContent = uc.description;
+
+  const attrs = [
+    ['Pole', uc.pole], ['Entity', uc.entity], ['AI Act Category', uc.aiAct],
+    ['Technology', uc.technology], ['Platform', uc.platform], ['Main AI Brick', uc.brick],
+    ['AI Domain', uc.domain], ['AI Category', uc.category], ['Sourcing', uc.sourcing],
+    ['IA Value Total', fmtK(uc.iaValue)], ['Pilot Country', uc.pilot],
+    ['Model contributors', uc.contributors], ['ITSVC 2', uc.itsvc], ['Date ITSVC', uc.dateItsvc],
+    ['Last gate passed', uc.gate], ['Date Last gate', uc.dateGate]
+  ];
+  document.getElementById('uc-attrs').innerHTML = attrs.map(([l,v]) => `
+    <div class="info-item">
+      <div class="info-label">${l}</div>
+      <div class="info-value">${esc(v) || '—'}</div>
+    </div>`).join('');
+
+  document.getElementById('uc-country-count').textContent = `(${uc.countries.length})`;
+  const tabs = document.getElementById('country-tabs');
+  const panels = document.getElementById('country-panels');
+
+  if (uc.countries.length === 0) {
+    tabs.innerHTML = `<div style="padding:20px; color:var(--ink-muted); font-style:italic;">Aucun pays déployé. ${state.editMode ? 'Cliquez sur "Add country" pour en créer un.' : 'Activez le mode édition pour ajouter un pays.'}</div>`;
+    panels.innerHTML = '';
+  } else {
+    if (!state.currentCountry || !uc.countries.find(c=>c.country===state.currentCountry)) {
+      state.currentCountry = uc.countries[0].country;
+    }
+    tabs.innerHTML = uc.countries.map(c => `
+      <button class="country-tab ${c.country===state.currentCountry?'active':''}" data-country="${esc(c.country)}" onclick="selectCountry('${esc(c.country)}')">
+        <span class="flag">${FLAG_FLAGS[c.country]||'🏳️'}</span> ${esc(c.country)}
+      </button>`).join('') + (state.editMode ? `<button class="country-tab add-tab" onclick="openCountryModal()">+ Add country</button>` : '');
+
+    panels.innerHTML = uc.countries.map(c => `
+      <div class="country-panel ${c.country===state.currentCountry?'active':''}" data-country="${esc(c.country)}">
+        ${renderCountryPanel(c)}
+      </div>`).join('');
+  }
+
+  setBreadcrumb([
+    {label:'TOP 18', action:()=>showView('list')},
+    {label:f.name, action:()=>showView('flagship',{flagshipId:f.id})},
+    {label:uc.name, current:true}
+  ]);
+}
+
+function renderCountryPanel(c) {
+  const editButtons = state.editMode ? `
+    <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn btn-ghost btn-sm" onclick="editCountry('${esc(c.country)}')">✎ Edit rollout</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCountry('${esc(c.country)}')">Remove country</button>
+    </div>` : '';
+  return `
+    <div class="country-grid">
+      <div class="country-field"><div class="country-field-label">Year</div><div class="country-field-value mono">${esc(c.year)}</div></div>
+      <div class="country-field"><div class="country-field-label">Status</div><div class="country-field-value">${esc(c.status)}</div></div>
+      <div class="country-field"><div class="country-field-label">Production date</div><div class="country-field-value mono">${esc(c.prodDate) || '—'}</div></div>
+      <div class="country-field"><div class="country-field-label">Rollout</div><div class="country-field-value">${esc(c.rollout)}</div></div>
+      <div class="country-field"><div class="country-field-label">MRR use case category</div><div class="country-field-value">${esc(c.mrrCat)||'—'}</div></div>
+      <div class="country-field"><div class="country-field-label">MRR</div><div class="country-field-value mono">${esc(c.mrr)||'—'}</div></div>
+      <div class="country-field"><div class="country-field-label">AI Use Case Owner</div><div class="country-field-value">${esc(c.owner)||'—'}</div></div>
+      <div class="country-field"><div class="country-field-label">AI Value Measure Type</div><div class="country-field-value">${esc(c.measure)}</div></div>
+    </div>
+
+    <div class="value-breakdown">
+      <div class="value-breakdown-title">AI Value Breakdown · FULL YEAR (k€)</div>
+      <div class="value-rows">
+        <div class="value-row"><div class="value-row-label">Net Banking Impact</div><div class="value-row-amount">${fmt(c.valNbi)}</div></div>
+        <div class="value-row"><div class="value-row-label">Gross Cost Savings</div><div class="value-row-amount">${fmt(c.valGcs)}</div></div>
+        <div class="value-row"><div class="value-row-label">Cost Avoidance</div><div class="value-row-amount">${fmt(c.valCa)}</div></div>
+        <div class="value-row"><div class="value-row-label">Cost of Risk</div><div class="value-row-amount">${fmt(c.valCor)}</div></div>
+        <div class="value-row"><div class="value-row-label">RWA Savings</div><div class="value-row-amount">${fmt(c.valRwa)}</div></div>
+        <div class="value-row"><div class="value-row-label">AI Value (capped) · FULL YEAR</div><div class="value-row-amount">${fmt(c.valCapped)}</div></div>
+      </div>
+    </div>
+    ${editButtons}
+  `;
+}
+
+function selectCountry(country) {
+  state.currentCountry = country;
+  document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.country-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.country-tab[data-country="${country}"]`)?.classList.add('active');
+  document.querySelector(`.country-panel[data-country="${country}"]`)?.classList.add('active');
+}
+
+// =========================================================
+// MODALS
+// =========================================================
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function openFlagshipModal(id) {
+  if (!state.editMode) return;
+  state.editingFlagshipId = id || null;
+  const f = id ? getFlagship(id) : null;
+  document.getElementById('mf-title').textContent = f ? 'Edit Flagship' : 'New Flagship';
+  document.getElementById('mf-name').value = f?.name || '';
+  document.getElementById('mf-description').value = f?.description || '';
+  document.getElementById('mf-sponsor').value = f?.sponsor || '';
+  document.getElementById('mf-owner').value = f?.owner || '';
+  document.getElementById('mf-division').value = f?.division || '';
+  document.getElementById('mf-subdivision').value = f?.subdivision || '';
+  document.getElementById('mf-poc').value = f?.poc || '';
+  document.getElementById('mf-analyst').value = f?.analyst || '';
+  openModal('modal-flagship');
+}
+
+function editFlagship() { openFlagshipModal(state.currentFlagshipId); }
+
+function saveFlagship() {
+  const data = {
+    name: document.getElementById('mf-name').value.trim(),
+    description: document.getElementById('mf-description').value.trim(),
+    sponsor: document.getElementById('mf-sponsor').value.trim(),
+    owner: document.getElementById('mf-owner').value.trim(),
+    division: document.getElementById('mf-division').value.trim(),
+    subdivision: document.getElementById('mf-subdivision').value.trim(),
+    poc: document.getElementById('mf-poc').value.trim(),
+    analyst: document.getElementById('mf-analyst').value.trim()
+  };
+  if (!data.name) { toast('Name is required', 'error'); return; }
+  if (state.editingFlagshipId) {
+    Object.assign(getFlagship(state.editingFlagshipId), data);
+    toast('Flagship updated', 'success');
+  } else {
+    const newRank = state.flagships.length + 1;
+    state.flagships.push({ id: uid('F'), rank: newRank, ...data, useCases: [] });
+    toast('Flagship created', 'success');
+  }
+  closeModal('modal-flagship');
+  persist();
+  if (state.editingFlagshipId === state.currentFlagshipId && document.getElementById('view-flagship').classList.contains('active')) renderFlagship();
+  else renderList();
+}
+
+function openUseCaseModal(id) {
+  if (!state.editMode) return;
+  state.editingUseCaseId = id || null;
+  const f = getFlagship(state.currentFlagshipId);
+  const uc = id ? getUseCase(f, id) : null;
+  document.getElementById('muc-title').textContent = uc ? 'Edit Use Case' : 'New Use Case';
+  const fields = ['name','description','pole','entity','technology','platform','brick','domain','category','contributors','pilot','itsvc','gate'];
+  fields.forEach(k => document.getElementById('muc-'+k).value = uc?.[k] || '');
+  document.getElementById('muc-aiact').value = uc?.aiAct || 'Limited Risk';
+  document.getElementById('muc-sourcing').value = uc?.sourcing || 'In-house';
+  document.getElementById('muc-iavalue').value = uc?.iaValue || '';
+  document.getElementById('muc-date-itsvc').value = uc?.dateItsvc || '';
+  document.getElementById('muc-date-gate').value = uc?.dateGate || '';
+  openModal('modal-usecase');
+}
+
+function editUseCase() { openUseCaseModal(state.currentUseCaseId); }
+
+function saveUseCase() {
+  const f = getFlagship(state.currentFlagshipId);
+  const data = {
+    name: document.getElementById('muc-name').value.trim(),
+    description: document.getElementById('muc-description').value.trim(),
+    pole: document.getElementById('muc-pole').value.trim(),
+    entity: document.getElementById('muc-entity').value.trim(),
+    aiAct: document.getElementById('muc-aiact').value,
+    technology: document.getElementById('muc-technology').value.trim(),
+    platform: document.getElementById('muc-platform').value.trim(),
+    brick: document.getElementById('muc-brick').value.trim(),
+    domain: document.getElementById('muc-domain').value.trim(),
+    category: document.getElementById('muc-category').value.trim(),
+    sourcing: document.getElementById('muc-sourcing').value,
+    iaValue: parseFloat(document.getElementById('muc-iavalue').value) || 0,
+    contributors: document.getElementById('muc-contributors').value.trim(),
+    pilot: document.getElementById('muc-pilot').value.trim(),
+    itsvc: document.getElementById('muc-itsvc').value.trim(),
+    dateItsvc: document.getElementById('muc-date-itsvc').value,
+    gate: document.getElementById('muc-gate').value.trim(),
+    dateGate: document.getElementById('muc-date-gate').value
+  };
+  if (!data.name) { toast('Name is required', 'error'); return; }
+  if (state.editingUseCaseId) {
+    const uc = getUseCase(f, state.editingUseCaseId);
+    Object.assign(uc, data);
+    toast('Use case updated', 'success');
+    persist();
+    renderUseCase();
+  } else {
+    const newUc = { id: uid('U'), ...data, countries: [] };
+    f.useCases.push(newUc);
+    toast('Use case created', 'success');
+    persist();
+    renderFlagship();
+  }
+  closeModal('modal-usecase');
+}
+
+function deleteUseCase() {
+  if (!confirm('Supprimer ce use case ? Cette action est irréversible.')) return;
+  const f = getFlagship(state.currentFlagshipId);
+  f.useCases = f.useCases.filter(u => u.id !== state.currentUseCaseId);
+  toast('Use case supprimé', 'success');
+  persist();
+  showView('flagship', {flagshipId: f.id});
+}
+
+function openCountryModal(country) {
+  if (!state.editMode) return;
+  state.editingCountry = country || null;
+  const f = getFlagship(state.currentFlagshipId);
+  const uc = getUseCase(f, state.currentUseCaseId);
+  const c = country ? uc.countries.find(x => x.country === country) : null;
+  document.getElementById('mc-title').textContent = c ? `Edit ${country} Rollout` : 'Add Country Rollout';
+  document.getElementById('mc-country').value = c?.country || 'France';
+  document.getElementById('mc-country').disabled = !!c;
+  document.getElementById('mc-year').value = c?.year || new Date().getFullYear();
+  document.getElementById('mc-status').value = c?.status || 'Draft';
+  document.getElementById('mc-prod').value = c?.prodDate || '';
+  document.getElementById('mc-val-capped').value = c?.valCapped || '';
+  document.getElementById('mc-val-nbi').value = c?.valNbi || '';
+  document.getElementById('mc-val-gcs').value = c?.valGcs || '';
+  document.getElementById('mc-val-ca').value = c?.valCa || '';
+  document.getElementById('mc-val-cor').value = c?.valCor || '';
+  document.getElementById('mc-val-rwa').value = c?.valRwa || '';
+  document.getElementById('mc-measure').value = c?.measure || 'Estimated';
+  document.getElementById('mc-rollout').value = c?.rollout || 'Local';
+  document.getElementById('mc-mrr-cat').value = c?.mrrCat || '';
+  document.getElementById('mc-mrr').value = c?.mrr || '';
+  document.getElementById('mc-owner').value = c?.owner || '';
+  openModal('modal-country');
+}
+
+function editCountry(country) { openCountryModal(country); }
+
+function saveCountry() {
+  const f = getFlagship(state.currentFlagshipId);
+  const uc = getUseCase(f, state.currentUseCaseId);
+  const data = {
+    country: document.getElementById('mc-country').value,
+    year: parseInt(document.getElementById('mc-year').value) || new Date().getFullYear(),
+    status: document.getElementById('mc-status').value,
+    prodDate: document.getElementById('mc-prod').value,
+    valCapped: parseFloat(document.getElementById('mc-val-capped').value) || 0,
+    valNbi: parseFloat(document.getElementById('mc-val-nbi').value) || 0,
+    valGcs: parseFloat(document.getElementById('mc-val-gcs').value) || 0,
+    valCa: parseFloat(document.getElementById('mc-val-ca').value) || 0,
+    valCor: parseFloat(document.getElementById('mc-val-cor').value) || 0,
+    valRwa: parseFloat(document.getElementById('mc-val-rwa').value) || 0,
+    measure: document.getElementById('mc-measure').value,
+    rollout: document.getElementById('mc-rollout').value,
+    mrrCat: document.getElementById('mc-mrr-cat').value.trim(),
+    mrr: document.getElementById('mc-mrr').value.trim(),
+    owner: document.getElementById('mc-owner').value.trim()
+  };
+  if (state.editingCountry) {
+    const idx = uc.countries.findIndex(c => c.country === state.editingCountry);
+    uc.countries[idx] = data;
+    toast(`${data.country} rollout updated`, 'success');
+  } else {
+    if (uc.countries.find(c => c.country === data.country)) { toast(`${data.country} existe déjà`, 'error'); return; }
+    uc.countries.push(data);
+    state.currentCountry = data.country;
+    toast(`${data.country} rollout ajouté`, 'success');
+  }
+  closeModal('modal-country');
+  persist();
+  renderUseCase();
+}
+
+function deleteCountry(country) {
+  if (!confirm(`Supprimer le déploiement pour ${country} ?`)) return;
+  const f = getFlagship(state.currentFlagshipId);
+  const uc = getUseCase(f, state.currentUseCaseId);
+  uc.countries = uc.countries.filter(c => c.country !== country);
+  if (state.currentCountry === country) state.currentCountry = uc.countries[0]?.country || null;
+  toast('Pays supprimé', 'success');
+  persist();
+  renderUseCase();
+}
+
+// =========================================================
+// JSON EXPORT / IMPORT
+// =========================================================
+function exportJSON() {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    version: 1,
+    flagships: state.flagships
+  };
+  const data = JSON.stringify(payload, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `flagship-top18-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Export JSON téléchargé', 'success');
+}
+
+function importJSON() {
+  if (!state.editMode) { toast('Activez d\'abord le mode édition', 'error'); return; }
+  document.getElementById('import-file').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      let data;
+      if (Array.isArray(parsed)) data = parsed; // ancien format
+      else if (parsed && Array.isArray(parsed.flagships)) data = parsed.flagships;
+      else throw new Error('Format invalide');
+      if (!confirm(`Importer ${data.length} flagships ? Cela remplacera vos données actuelles (un export préalable est conseillé).`)) {
+        event.target.value = ''; return;
+      }
+      state.flagships = data;
+      persist();
+      toast(`${data.length} flagships importés`, 'success');
+      showView('list');
+    } catch (err) {
+      toast('Fichier JSON invalide', 'error');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// =========================================================
+// INIT
+// =========================================================
+window.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active');
+});
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+});
+
+if (storageGet('flagship_banner_dismissed')) {
+  const b = document.getElementById('welcome-banner');
+  if (b) b.style.display = 'none';
+}
+
+setSaveIndicator('init');
+applyEditMode();
+renderList();
+</script>
+</body>
+</html>
