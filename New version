@@ -1,0 +1,1447 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flagship Registry — TOP 18</title>
+
+<!-- ===================================================== -->
+<!-- SHEETJS via CDN (pour export Excel)                   -->
+<!-- ===================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+/* ===================================================== */
+/* STYLES                                                */
+/* ===================================================== */
+.fr-app { font-family: Arial, Helvetica, sans-serif; background: #f5f3ee; color: #0d1b2a; border: 1px solid #e3ddd0; font-size: 14px; line-height: 1.45; }
+.fr-app * { box-sizing: border-box; }
+
+/* Top bar */
+.fr-topbar { background: #0d1b2a; color: #f5f3ee; padding: 14px 22px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-bottom: 3px solid #8b1e3f; }
+.fr-mark { width: 34px; height: 34px; background: #8b1e3f; color: white; display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-weight: bold; }
+.fr-title { font-family: Georgia, serif; font-size: 20px; font-weight: bold; }
+.fr-sub { font-size: 11px; opacity: .7; text-transform: uppercase; letter-spacing: 1.5px; }
+.fr-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* Buttons */
+.fr-btn { border: 1px solid #c9c0ad; background: white; color: #0d1b2a; padding: 8px 12px; cursor: pointer; text-transform: uppercase; font-size: 11px; letter-spacing: .8px; font-family: inherit; }
+.fr-btn:hover:not(:disabled) { border-color: #0d1b2a; }
+.fr-btn.primary { background: #0d1b2a; color: white; border-color: #0d1b2a; }
+.fr-btn.accent { background: #8b1e3f; color: white; border-color: #8b1e3f; }
+.fr-btn.danger { color: #8b1e3f; border-color: #8b1e3f; }
+.fr-btn.danger:hover:not(:disabled) { background: #8b1e3f; color: white; }
+.fr-btn:disabled { opacity: .35; cursor: not-allowed; }
+.fr-btn.small { padding: 5px 9px; font-size: 10px; }
+
+/* Mode badge */
+.fr-badge { padding: 4px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; border: 1px solid; }
+.fr-badge.read { background: rgba(255,255,255,.08); color: #c9c0ad; border-color: rgba(255,255,255,.2); }
+.fr-badge.edit { background: #8b1e3f; color: white; border-color: #8b1e3f; }
+.fr-badge.admin { background: #a07c2c; color: white; border-color: #a07c2c; }
+
+/* Save indicator */
+.fr-save { font-size: 10px; color: rgba(255,255,255,.5); font-family: monospace; }
+.fr-save.saved { color: #a8d5b2; }
+
+/* Breadcrumb */
+.fr-breadcrumb { padding: 10px 22px; background: #fbfaf7; border-bottom: 1px solid #e3ddd0; font-size: 12px; color: #6b7a8c; }
+.fr-breadcrumb a { cursor: pointer; color: #0d1b2a; text-decoration: none; }
+.fr-breadcrumb a:hover { color: #8b1e3f; }
+
+/* Layout */
+.fr-main { padding: 22px; max-width: 1300px; margin: auto; }
+.fr-page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+h1 { font-family: Georgia, serif; font-weight: 600; margin: 0 0 5px 0; font-size: 32px; }
+h2 { font-family: Georgia, serif; font-weight: 600; margin: 0; }
+.fr-muted { color: #6b7a8c; }
+.fr-label { font-size: 10px; color: #6b7a8c; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 3px; }
+
+/* Lock screen */
+.fr-lock { padding: 80px 22px; text-align: center; }
+.fr-lock .fr-lock-icon { font-size: 48px; margin-bottom: 18px; }
+.fr-lock h1 { font-size: 28px; }
+.fr-lock-form { max-width: 380px; margin: 24px auto 0; }
+.fr-lock-form input { width: 100%; padding: 12px; border: 1px solid #c9c0ad; font-family: monospace; font-size: 16px; text-align: center; letter-spacing: 3px; margin-bottom: 12px; }
+.fr-lock-form input:focus { outline: 1px solid #8b1e3f; border-color: #8b1e3f; }
+.fr-lock-hint { font-size: 11px; color: #6b7a8c; margin-top: 14px; }
+
+/* Banner */
+.fr-banner { background: #f4e8eb; border-left: 3px solid #8b1e3f; padding: 10px 14px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+
+/* Stats */
+.fr-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #e3ddd0; border: 1px solid #e3ddd0; margin-bottom: 18px; }
+.fr-stat { background: white; padding: 14px; }
+.fr-value { font-family: Georgia, serif; font-size: 25px; font-weight: bold; }
+
+/* Search */
+.fr-search { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.fr-search input, .fr-search select { padding: 9px 12px; border: 1px solid #c9c0ad; background: white; font-family: inherit; }
+.fr-search input { flex: 1; min-width: 190px; }
+
+/* Grid + Cards */
+.fr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+.fr-card { background: white; border: 1px solid #e3ddd0; padding: 18px; cursor: pointer; transition: all 0.15s; }
+.fr-card:hover { border-color: #0d1b2a; box-shadow: 0 4px 14px rgba(0,0,0,.08); transform: translateY(-2px); }
+.fr-rank { font-family: Georgia, serif; color: #8b1e3f; font-weight: bold; font-size: 12px; }
+.fr-name { font-family: Georgia, serif; font-size: 19px; font-weight: bold; margin: 4px 0 8px; }
+.fr-chip { display: inline-block; border: 1px solid #e3ddd0; background: #fbfaf7; padding: 3px 8px; margin: 2px 2px 2px 0; font-size: 11px; }
+.fr-footer { border-top: 1px solid #e3ddd0; margin-top: 12px; padding-top: 10px; display: flex; justify-content: space-between; font-size: 12px; color: #6b7a8c; }
+
+/* Views */
+.fr-view { display: none; }
+.fr-view.active { display: block; }
+
+/* Detail layout */
+.fr-detail { display: grid; grid-template-columns: 320px 1fr; gap: 18px; }
+.fr-panel, .fr-box { background: white; border: 1px solid #e3ddd0; padding: 18px; }
+.fr-row { background: white; border: 1px solid #e3ddd0; padding: 14px; margin-bottom: 9px; cursor: pointer; display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; }
+.fr-row:hover { border-color: #0d1b2a; }
+
+/* Status pills */
+.fr-status { font-size: 10px; border: 1px solid #c9c0ad; padding: 4px 8px; text-transform: uppercase; font-family: monospace; }
+.fr-live { background: #e3ede5; color: #2d5a3d; border-color: #2d5a3d; }
+.fr-pilot { background: #f7ecd1; color: #8a5a00; border-color: #8a5a00; }
+
+/* Attrs grid */
+.fr-attrs { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+
+/* Tabs */
+.fr-tabs { border-bottom: 2px solid #e3ddd0; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 0; }
+.fr-tab { background: transparent; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; cursor: pointer; margin-bottom: -2px; font-family: inherit; font-size: 13px; }
+.fr-tab.active { color: #8b1e3f; border-bottom-color: #8b1e3f; font-weight: bold; }
+
+/* Country grid */
+.fr-country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1px; background: #e3ddd0; border: 1px solid #e3ddd0; margin-bottom: 16px; }
+.fr-country-grid > div { background: white; padding: 12px; }
+
+/* Modal */
+.fr-modal-bg { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,.45); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+.fr-modal-bg.show { display: flex; }
+.fr-modal { background: white; border: 1px solid #c9c0ad; width: min(820px, 100%); max-height: 90vh; overflow: auto; }
+.fr-modal-head, .fr-modal-foot { background: #fbfaf7; padding: 14px 18px; border-bottom: 1px solid #e3ddd0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.fr-modal-foot { border-top: 1px solid #e3ddd0; border-bottom: 0; justify-content: flex-end; }
+
+/* Forms */
+.fr-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 18px; }
+.fr-field.full { grid-column: 1 / -1; }
+.fr-field label { display: block; font-size: 10px; color: #6b7a8c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.fr-field input, .fr-field select, .fr-field textarea { width: 100%; padding: 9px; border: 1px solid #c9c0ad; font-family: inherit; font-size: 13px; }
+.fr-field textarea { min-height: 65px; resize: vertical; }
+.fr-field input:focus, .fr-field select:focus, .fr-field textarea:focus { outline: 1px solid #8b1e3f; border-color: #8b1e3f; }
+.fr-section { grid-column: 1 / -1; font-family: Georgia, serif; color: #8b1e3f; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #e3ddd0; padding-bottom: 6px; margin-top: 8px; font-weight: bold; }
+.fr-section:first-child { margin-top: 0; }
+
+/* Custom fields (admin only) */
+.fr-custom-field { display: flex; gap: 6px; align-items: flex-end; }
+.fr-custom-field > div:first-child { flex: 1; }
+.fr-custom-field .fr-btn { padding: 9px 10px; }
+
+/* Toast */
+.fr-toast { position: fixed; right: 20px; bottom: 20px; background: #0d1b2a; color: white; padding: 12px 16px; display: none; z-index: 10000; border-left: 3px solid #8b1e3f; max-width: 360px; }
+.fr-toast.show { display: block; }
+.fr-toast.success { border-left-color: #2d5a3d; }
+.fr-toast.error { border-left-color: #8b1e3f; }
+
+.fr-hidden { display: none !important; }
+.fr-empty { padding: 30px; text-align: center; color: #6b7a8c; font-style: italic; border: 1px dashed #c9c0ad; }
+
+@media (max-width: 800px) {
+  .fr-stats { grid-template-columns: repeat(2, 1fr); }
+  .fr-detail { grid-template-columns: 1fr; }
+  .fr-row { grid-template-columns: 1fr; }
+  .fr-form { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="fr-app">
+
+  <!-- =============== TOP BAR =============== -->
+  <div class="fr-topbar">
+    <div class="fr-mark">F</div>
+    <div>
+      <div class="fr-title">Flagship Registry</div>
+      <div class="fr-sub">AI Use Cases · TOP 18</div>
+    </div>
+    <div class="fr-actions">
+      <span id="modeBadge" class="fr-badge read">Locked</span>
+      <span id="saveIndicator" class="fr-save">—</span>
+      <button type="button" class="fr-btn" onclick="App.openAuth()">Unlock / Lock</button>
+      <button type="button" class="fr-btn unlockedOnly fr-hidden" onclick="App.exportJSON()">Export JSON</button>
+      <button type="button" class="fr-btn unlockedOnly fr-hidden" onclick="App.exportExcel()">Export Excel</button>
+      <button type="button" id="importBtn" class="fr-btn editOnly fr-hidden" onclick="document.getElementById('importFile').click()">Import JSON</button>
+      <input id="importFile" type="file" accept=".json" style="display:none">
+    </div>
+  </div>
+
+  <!-- =============== BREADCRUMB =============== -->
+  <div id="breadcrumb" class="fr-breadcrumb fr-hidden">
+    <a onclick="App.showList()">TOP 18</a>
+  </div>
+
+  <div class="fr-main">
+
+    <!-- =============== LOCK SCREEN =============== -->
+    <section id="viewLock" class="fr-view active">
+      <div class="fr-lock">
+        <div class="fr-lock-icon">🔒</div>
+        <h1>Flagship Registry</h1>
+        <div class="fr-muted">Accès protégé — Veuillez vous identifier pour continuer</div>
+        <div class="fr-lock-form">
+          <input id="lockPw" type="password" placeholder="••••••••" onkeydown="if(event.keyCode===13)App.tryAuthLock()">
+          <button type="button" class="fr-btn primary" style="width:100%" onclick="App.tryAuthLock()">Unlock</button>
+          <div class="fr-lock-hint">
+            <b>Mots de passe disponibles :</b><br>
+            <code>viewer2025</code> — lecture seule<br>
+            <code>contrib2025</code> — édition standard<br>
+            <code>admin2025</code> — administrateur (tous droits)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== LIST VIEW =============== -->
+    <section id="viewList" class="fr-view">
+      <div class="fr-banner" id="banner">
+        <div><b>Bienvenue.</b> Cliquez sur un flagship pour voir ses use cases et déploiements pays.</div>
+        <button type="button" class="fr-btn small" onclick="App.hideBanner()">Compris</button>
+      </div>
+
+      <div class="fr-page-head">
+        <div>
+          <h1>TOP 18 Flagships</h1>
+          <div class="fr-muted">AI Use Case Registry — données sauvegardées automatiquement</div>
+        </div>
+        <div>
+          <button type="button" class="fr-btn editOnly" onclick="App.openFlagModal('')" disabled>+ New flagship</button>
+          <button type="button" class="fr-btn danger adminOnly" onclick="App.manageCustomFields('flagship')" disabled>⚙ Custom fields</button>
+        </div>
+      </div>
+
+      <div class="fr-stats">
+        <div class="fr-stat"><div class="fr-label">Flagships</div><div id="statF" class="fr-value">—</div></div>
+        <div class="fr-stat"><div class="fr-label">Use cases</div><div id="statU" class="fr-value">—</div></div>
+        <div class="fr-stat"><div class="fr-label">AI Value k€</div><div id="statV" class="fr-value">—</div></div>
+        <div class="fr-stat"><div class="fr-label">Countries</div><div id="statC" class="fr-value">—</div></div>
+      </div>
+
+      <div class="fr-search">
+        <input id="search" oninput="App.renderList()" placeholder="Search by name, sponsor, division...">
+        <select id="filterDiv" onchange="App.renderList()"><option value="">All divisions</option></select>
+      </div>
+
+      <div id="grid" class="fr-grid"></div>
+    </section>
+
+    <!-- =============== FLAGSHIP DETAIL VIEW =============== -->
+    <section id="viewFlag" class="fr-view">
+      <div class="fr-page-head">
+        <div>
+          <div id="fdRank" class="fr-rank"></div>
+          <h1 id="fdName"></h1>
+          <div id="fdSub" class="fr-muted"></div>
+        </div>
+        <div>
+          <button type="button" class="fr-btn editOnly" onclick="App.openFlagModal(App.state.currentFid)" disabled>✎ Edit flagship</button>
+          <button type="button" class="fr-btn danger editOnly" onclick="App.deleteFlag()" disabled>🗑 Delete</button>
+          <button type="button" class="fr-btn accent editOnly" onclick="App.openUcModal('')" disabled>+ Add use case</button>
+        </div>
+      </div>
+      <div class="fr-detail">
+        <div id="fdInfo" class="fr-panel"></div>
+        <div>
+          <h2>Use Cases <span id="ucCount" class="fr-muted"></span></h2>
+          <div id="ucList" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== USE CASE DETAIL VIEW =============== -->
+    <section id="viewUc" class="fr-view">
+      <div class="fr-box">
+        <div class="fr-page-head">
+          <div>
+            <h1 id="ucName"></h1>
+            <div id="ucDesc" class="fr-muted"></div>
+          </div>
+          <div>
+            <button type="button" class="fr-btn editOnly" onclick="App.openUcModal(App.state.currentUid)" disabled>✎ Edit use case</button>
+            <button type="button" class="fr-btn danger editOnly" onclick="App.deleteUc()" disabled>🗑 Delete</button>
+          </div>
+        </div>
+        <div id="ucAttrs" class="fr-attrs"></div>
+      </div>
+
+      <div class="fr-box" style="margin-top:16px">
+        <div class="fr-page-head">
+          <h2>Country Rollouts <span id="countryCount" class="fr-muted"></span></h2>
+          <button type="button" class="fr-btn accent editOnly" onclick="App.openCountryModal('')" disabled>+ Add country</button>
+        </div>
+        <div id="tabs" class="fr-tabs"></div>
+        <div id="countryPanel"></div>
+      </div>
+    </section>
+
+  </div><!-- /fr-main -->
+
+  <!-- =============== MODALS =============== -->
+  <div id="authModal" class="fr-modal-bg">
+    <div class="fr-modal" style="max-width:430px">
+      <div class="fr-modal-head"><h2>Change Access Level</h2><button type="button" class="fr-btn" onclick="App.closeModal('authModal')">✕</button></div>
+      <div class="fr-form">
+        <div class="fr-field full">
+          <label>Password</label>
+          <input id="authPw" type="password" onkeydown="if(event.keyCode===13)App.tryAuth()">
+        </div>
+        <div class="fr-field full fr-muted" style="font-size:11px">
+          Niveaux : <b>viewer2025</b> (lecture) · <b>contrib2025</b> (édition) · <b>admin2025</b> (tous droits)
+        </div>
+      </div>
+      <div class="fr-modal-foot">
+        <button type="button" class="fr-btn danger" onclick="App.lockApp()">Lock app</button>
+        <button type="button" class="fr-btn" onclick="App.closeModal('authModal')">Cancel</button>
+        <button type="button" class="fr-btn primary" onclick="App.tryAuth()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="flagModal" class="fr-modal-bg"></div>
+  <div id="ucModal" class="fr-modal-bg"></div>
+  <div id="countryModal" class="fr-modal-bg"></div>
+  <div id="customFieldsModal" class="fr-modal-bg"></div>
+
+  <div id="toast" class="fr-toast"></div>
+
+</div>
+<!-- =============== SCRIPT =============== -->
+<script>
+/* ===================================================== */
+/* APPLICATION — Flagship Registry v3                    */
+/* Single-file, Confluence-compatible (HTML Macro)       */
+/* ===================================================== */
+window.App = (function() {
+'use strict';
+
+/* ===================================================== */
+/* 1. CONFIGURATION — Modifiable en début de code        */
+/* ===================================================== */
+
+// --- Mots de passe par niveau ---
+// Modifiez ces valeurs pour changer les mots de passe.
+var PASSWORDS = {
+  'viewer2025':  'viewer',   // lecture seule (accès à toutes les pages)
+  'contrib2025': 'contrib',  // peut éditer flagships, use cases, pays
+  'admin2025':   'admin'     // peut TOUT : custom fields, suppression, etc.
+};
+
+// --- Filtrage des flagships visibles selon le mot de passe ---
+// Si '*' = tous visibles. Sinon liste d'IDs ['F01','F02',...]
+// Permet par exemple de cacher certains flagships sensibles aux viewers.
+var VISIBLE_FLAGSHIPS = {
+  'viewer':  '*',      // viewer voit tout en lecture seule
+  'contrib': '*',      // contributeur voit tout
+  'admin':   '*'       // admin voit tout
+  // Exemple ciblé : 'viewer': ['F01','F02','F03'] pour ne montrer que ces 3
+};
+
+// --- Clé localStorage ---
+var STORAGE_KEY = 'fr_flagship_registry_v3';
+var SESSION_KEY = 'fr_flagship_session_v3'; // pour mémoriser le niveau d'accès
+
+// --- Champs standard pour Flagship / Use Case / Country ---
+// Format: [key, label, type, options?]
+// types: 'text', 'textarea', 'number', 'date', 'select'
+var FLAGSHIP_FIELDS = [
+  ['name',        'Name',                'text', null, true],
+  ['description', 'Description',         'textarea', null, true],
+  ['sponsor',     'Sponsor',             'text'],
+  ['owner',       'AI Use Case Owner',   'text'],
+  ['division',    'Division',            'text'],
+  ['subdivision', 'Sub Division',        'text'],
+  ['poc',         'Point of Contact',    'text'],
+  ['analyst',     'AI Business Analyst', 'text']
+];
+
+var USECASE_FIELDS = [
+  // section General
+  ['__section__', 'General'],
+  ['name',         'Name',                  'text', null, true],
+  ['description',  'Description',           'textarea', null, true],
+  ['pole',         'Pole',                  'text'],
+  ['entity',       'Entity',                'text'],
+  ['aiAct',        'AI Act Category',       'select', ['Minimal Risk','Limited Risk','High Risk','Unacceptable Risk']],
+  ['technology',   'Technology',            'text'],
+  ['platform',     'Platform',              'text'],
+  ['brick',        'Main AI Brick',         'text'],
+  ['domain',       'AI Domain',             'text'],
+  ['category',     'AI Category',           'text'],
+  ['sourcing',     'Sourcing',              'select', ['In-house','Vendor','Hybrid','Open Source']],
+  ['iaValue',      'IA Value Total (k€)',   'number'],
+  ['contributors', 'Model dev contributors','text', null, true],
+  ['pilot',        'Pilot Country',         'text'],
+  ['itsvc',        'ITSVC 2',               'text'],
+  ['dateItsvc',    'Date ITSVC',            'date'],
+  ['gate',         'Last gate passed',      'text'],
+  ['dateGate',     'Date Last gate passed', 'date']
+];
+
+var COUNTRY_FIELDS = [
+  ['__section__', 'Country & Timing'],
+  ['country',   'Country',          'text'],
+  ['year',      'Year',             'number'],
+  ['status',    'Status',           'select', ['Draft','Pilot','Industrialized','Decommissioned']],
+  ['prodDate',  'Production date',  'date'],
+  ['__section__', 'AI Value Breakdown (k€, Full Year)'],
+  ['valCapped', 'AI Value capped',         'number'],
+  ['valNbi',    'Net Banking Impact',      'number'],
+  ['valGcs',    'Gross Cost Savings',      'number'],
+  ['valCa',     'Cost Avoidance',          'number'],
+  ['valCor',    'Cost of Risk',            'number'],
+  ['valRwa',    'RWA Savings',             'number'],
+  ['measure',   'AI Value Measure Type',   'select', ['Estimated','Measured','Modeled']],
+  ['__section__', 'Rollout & Ownership'],
+  ['rollout',   'Rollout',                  'select', ['Local','Regional','Global']],
+  ['mrrCat',    'MRR use case category',    'text'],
+  ['mrr',       'MRR',                      'text'],
+  ['owner',     'AI Use Case Owner',        'text']
+];
+
+/* ===================================================== */
+/* 2. DONNEES PAR DEFAUT (18 flagships)                  */
+/* ===================================================== */
+var DEFAULT_DATA = [
+  { id:'F01', rank:1, name:'KYC Acceleration', description:'Automated KYC document review and risk scoring leveraging multimodal AI for retail and SME clients.', sponsor:'Group Compliance', owner:'M. Lefevre', division:'GBIS', subdivision:'Financial Crime', poc:'A. Moreau', analyst:'C. Dubois', useCases:[
+    { id:'U01F01', name:'Document Extraction Pipeline', description:'Extract structured KYC fields from ID, proof of residency, and corporate documents using OCR + LLM.', pole:'Operations', entity:'SG Group', aiAct:'High Risk', technology:'LLM + OCR', platform:'Azure ML', brick:'Document AI', domain:'NLP', category:'Information Extraction', sourcing:'Hybrid', iaValue:4200, contributors:'AI4Compliance Team', pilot:'France', itsvc:'ITSVC-1042', dateItsvc:'2024-03-15', gate:'Gate 4', dateGate:'2024-09-20', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2024-10-01', valCapped:2800, valNbi:0, valGcs:2200, valCa:600, valCor:0, valRwa:0, measure:'Measured', rollout:'Local', mrrCat:'Operational Efficiency', mrr:'MRR-FR-2024-018', owner:'M. Lefevre' },
+      { country:'Italy', year:2025, status:'Pilot', prodDate:'2025-03-15', valCapped:900, valNbi:0, valGcs:700, valCa:200, valCor:0, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Operational Efficiency', mrr:'MRR-IT-2025-003', owner:'G. Rossi' }
+    ]},
+    { id:'U02F01', name:'Risk Scoring Engine', description:'PEP/sanction screening and ML-based risk scoring of new client onboardings.', pole:'Compliance', entity:'SG Group', aiAct:'High Risk', technology:'Gradient Boosting', platform:'Databricks', brick:'Predictive AI', domain:'Tabular ML', category:'Classification', sourcing:'In-house', iaValue:3100, contributors:'Risk Analytics', pilot:'France', itsvc:'ITSVC-1078', dateItsvc:'2024-06-10', gate:'Gate 3', dateGate:'2025-01-12', countries:[
+      { country:'France', year:2025, status:'Pilot', prodDate:'2025-02-01', valCapped:1500, valNbi:0, valGcs:0, valCa:0, valCor:1500, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Risk Management', mrr:'MRR-FR-2025-006', owner:'M. Lefevre' }
+    ]}
+  ]},
+  { id:'F02', rank:2, name:'Credit Decision Copilot', description:'Generative AI copilot for credit analysts: summarization, covenant extraction, peer benchmarking on corporate deals.', sponsor:'GLBA', owner:'J. Bernard', division:'Corporate & Investment Banking', subdivision:'Credit Risk', poc:'P. Lambert', analyst:'L. Garnier', useCases:[
+    { id:'U01F02', name:'Credit Memo Summarization', description:'Summarize 50-page credit memos into key risk factors and exposures.', pole:'Front Office', entity:'GLBA', aiAct:'Limited Risk', technology:'LLM (GPT-4 class)', platform:'Internal LLM Gateway', brick:'Generative AI', domain:'NLP', category:'Summarization', sourcing:'Vendor', iaValue:5400, contributors:'GenAI Lab', pilot:'France', itsvc:'ITSVC-1130', dateItsvc:'2024-09-01', gate:'Gate 4', dateGate:'2025-02-28', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2025-03-01', valCapped:3200, valNbi:1800, valGcs:1400, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Global', mrrCat:'Productivity', mrr:'MRR-FR-2025-011', owner:'J. Bernard' },
+      { country:'Luxembourg', year:2025, status:'Pilot', prodDate:'2025-05-15', valCapped:600, valNbi:400, valGcs:200, valCa:0, valCor:0, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Productivity', mrr:'MRR-LU-2025-002', owner:'F. Schmit' }
+    ]}
+  ]},
+  { id:'F03', rank:3, name:'Markets AI Trading Assistant', description:'Real-time AI assistant for FX and rates traders: news triage, anomaly detection, and execution suggestion.', sponsor:'Global Markets', owner:'S. Nakamura', division:'Global Markets', subdivision:'FX & Rates', poc:'R. Chen', analyst:'A. Petit', useCases:[
+    { id:'U01F03', name:'News Triage Engine', description:'Cluster, dedupe and score market-moving news in real time.', pole:'Trading Floor', entity:'GLBA Markets', aiAct:'Limited Risk', technology:'Transformers + Streaming', platform:'AWS Kinesis + SageMaker', brick:'NLP Pipeline', domain:'NLP', category:'Information Retrieval', sourcing:'In-house', iaValue:6800, contributors:'Markets AI Squad', pilot:'France', itsvc:'ITSVC-1201', dateItsvc:'2024-11-12', gate:'Gate 4', dateGate:'2025-04-08', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2025-04-10', valCapped:4500, valNbi:4500, valGcs:0, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Global', mrrCat:'Revenue', mrr:'MRR-FR-2025-019', owner:'S. Nakamura' }
+    ]}
+  ]},
+  { id:'F04', rank:4, name:'Retail Customer 360', description:'Unified customer view and next-best-action engine across digital and branch channels.', sponsor:'Retail Banking', owner:'C. Martin', division:'Retail Banking', subdivision:'Customer Experience', poc:'V. Roux', analyst:'M. Faure', useCases:[
+    { id:'U01F04', name:'Next-Best-Action Recommender', description:'Personalized product recommendations across mobile, web and branch.', pole:'Retail', entity:'SG Retail FR', aiAct:'Limited Risk', technology:'Two-Tower DL', platform:'GCP Vertex AI', brick:'Recommendation', domain:'Recsys', category:'Personalization', sourcing:'In-house', iaValue:4900, contributors:'Personalization Lab', pilot:'France', itsvc:'ITSVC-1156', dateItsvc:'2024-08-20', gate:'Gate 4', dateGate:'2025-01-30', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2025-02-15', valCapped:3400, valNbi:3400, valGcs:0, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Local', mrrCat:'Revenue', mrr:'MRR-FR-2025-009', owner:'C. Martin' }
+    ]}
+  ]},
+  { id:'F05', rank:5, name:'AML Transaction Monitoring', description:'Next-gen anti-money laundering alerting with graph neural networks and behavioral analytics.', sponsor:'Group Compliance', owner:'A. Kovac', division:'GBIS', subdivision:'AML', poc:'N. Olsen', analyst:'T. Weiss', useCases:[
+    { id:'U01F05', name:'Graph-Based Alert Triage', description:'GNN-based suspicious activity scoring on transaction graphs.', pole:'Compliance', entity:'SG Group', aiAct:'High Risk', technology:'Graph Neural Networks', platform:'Databricks', brick:'Predictive AI', domain:'Graph ML', category:'Anomaly Detection', sourcing:'In-house', iaValue:5200, contributors:'Graph AI Team', pilot:'France', itsvc:'ITSVC-1210', dateItsvc:'2024-12-01', gate:'Gate 3', dateGate:'2025-03-22', countries:[
+      { country:'France', year:2025, status:'Pilot', prodDate:'2025-05-01', valCapped:2100, valNbi:0, valGcs:0, valCa:0, valCor:2100, valRwa:0, measure:'Estimated', rollout:'Local', mrrCat:'Risk Management', mrr:'MRR-FR-2025-014', owner:'A. Kovac' }
+    ]}
+  ]},
+  { id:'F06', rank:6, name:'IT Ops AI', description:'AIOps platform for incident prediction, root-cause analysis and intelligent ticket routing.', sponsor:'Group IT', owner:'D. Klein', division:'Group IT', subdivision:'Infrastructure', poc:'E. Tran', analyst:'O. Mendes', useCases:[
+    { id:'U01F06', name:'Incident Auto-Routing', description:'Classify and route IT tickets to the right L2/L3 team.', pole:'IT Ops', entity:'SG Group', aiAct:'Minimal Risk', technology:'BERT Classifier', platform:'Azure ML', brick:'NLP Classifier', domain:'NLP', category:'Classification', sourcing:'In-house', iaValue:1800, contributors:'AIOps Squad', pilot:'France', itsvc:'ITSVC-1067', dateItsvc:'2024-05-10', gate:'Gate 4', dateGate:'2024-10-15', countries:[
+      { country:'France', year:2025, status:'Industrialized', prodDate:'2024-11-01', valCapped:1400, valNbi:0, valGcs:1400, valCa:0, valCor:0, valRwa:0, measure:'Measured', rollout:'Global', mrrCat:'Operational Efficiency', mrr:'MRR-FR-2024-029', owner:'D. Klein' }
+    ]}
+  ]},
+  { id:'F07', rank:7, name:'ESG Intelligence', description:'AI-driven ESG scoring and controversy detection for portfolio and counterparty analysis.', sponsor:'Sustainability', owner:'I. Aliyev', division:'Group Strategy', subdivision:'Sustainability', poc:'B. Costa', analyst:'H. Park', useCases:[
+    { id:'U01F07', name:'ESG Controversy Detection', description:'Detect ESG controversies from news and regulatory feeds.', pole:'Sustainability', entity:'SG Group', aiAct:'Limited Risk', technology:'LLM + Web Scraping', platform:'AWS', brick:'NLP Pipeline', domain:'NLP', category:'Classification', sourcing:'Hybrid', iaValue:2200, contributors:'ESG AI Team', pilot:'France', itsvc:'ITSVC-1188', dateItsvc:'2024-10-05', gate:'Gate 3', dateGate:'2025-02-18', countries:[]}
+  ]},
+  { id:'F08', rank:8, name:'Document Intelligence Hub', description:'Centralized document understanding service: contracts, statements, regulatory filings.', sponsor:'Operations', owner:'F. Boucher', division:'GBIS', subdivision:'Operations', poc:'K. Iyer', analyst:'D. Souza', useCases:[
+    { id:'U01F08', name:'Contract Clause Extraction', description:'Extract key clauses from ISDA, GMRA and bilateral contracts.', pole:'Legal Ops', entity:'SG Group', aiAct:'Limited Risk', technology:'LLM Fine-tuned', platform:'Internal LLM Gateway', brick:'Document AI', domain:'NLP', category:'Information Extraction', sourcing:'In-house', iaValue:3700, contributors:'DocAI Team', pilot:'France', itsvc:'ITSVC-1145', dateItsvc:'2024-07-22', gate:'Gate 4', dateGate:'2024-12-15', countries:[]}
+  ]},
+  { id:'F09', rank:9, name:'Fraud Shield', description:'Real-time fraud detection across cards, transfers and account openings.', sponsor:'Risk', owner:'R. Hoffmann', division:'Retail Banking', subdivision:'Fraud', poc:'L. Yamada', analyst:'P. Silva', useCases:[
+    { id:'U01F09', name:'Card Fraud Real-Time Scoring', description:'Sub-100ms fraud scoring on card authorizations.', pole:'Fraud', entity:'SG Retail FR', aiAct:'High Risk', technology:'Gradient Boosting', platform:'On-prem GPU Cluster', brick:'Predictive AI', domain:'Tabular ML', category:'Anomaly Detection', sourcing:'In-house', iaValue:6100, contributors:'Fraud AI Team', pilot:'France', itsvc:'ITSVC-1098', dateItsvc:'2024-06-30', gate:'Gate 4', dateGate:'2024-11-20', countries:[]}
+  ]},
+  { id:'F10', rank:10, name:'HR Talent AI', description:'AI-assisted CV screening, internal mobility matching and skills mapping.', sponsor:'Group HR', owner:'V. Almeida', division:'Group HR', subdivision:'Talent', poc:'S. Kone', analyst:'E. Ozturk', useCases:[
+    { id:'U01F10', name:'Internal Mobility Matcher', description:'Recommend internal job opportunities to employees based on skills.', pole:'HR', entity:'SG Group', aiAct:'Limited Risk', technology:'Sentence Transformers', platform:'Azure ML', brick:'Embedding Search', domain:'NLP', category:'Matching', sourcing:'In-house', iaValue:1500, contributors:'HR Analytics', pilot:'France', itsvc:'ITSVC-1175', dateItsvc:'2024-09-18', gate:'Gate 3', dateGate:'2025-02-05', countries:[]}
+  ]},
+  { id:'F11', rank:11, name:'Treasury & ALM Optimizer', description:'AI-driven liquidity forecasting and balance sheet optimization for ALM teams.', sponsor:'Treasury', owner:'M. Eriksson', division:'Finance', subdivision:'ALM', poc:'T. Andersson', analyst:'J. Lindqvist', useCases:[
+    { id:'U01F11', name:'Liquidity Forecasting', description:'30-day rolling liquidity forecast with anomaly detection.', pole:'Treasury', entity:'SG Group', aiAct:'Minimal Risk', technology:'Time Series DL', platform:'Databricks', brick:'Forecasting', domain:'Time Series', category:'Forecasting', sourcing:'In-house', iaValue:2800, contributors:'Treasury AI', pilot:'France', itsvc:'ITSVC-1163', dateItsvc:'2024-08-10', gate:'Gate 3', dateGate:'2025-01-15', countries:[]}
+  ]},
+  { id:'F12', rank:12, name:'Wealth Advisor Copilot', description:'Generative AI assistant for private bankers: portfolio commentary, client preparation, regulatory checks.', sponsor:'Private Banking', owner:'L. Fontaine', division:'Wealth Management', subdivision:'Private Banking', poc:'M. Yilmaz', analyst:'N. Rahman', useCases:[
+    { id:'U01F12', name:'Portfolio Commentary Generator', description:'Auto-generate monthly client portfolio reviews.', pole:'Private Bank', entity:'SG PB', aiAct:'Limited Risk', technology:'LLM (GPT-4 class)', platform:'Internal LLM Gateway', brick:'Generative AI', domain:'NLP', category:'Generation', sourcing:'Vendor', iaValue:3300, contributors:'GenAI Lab', pilot:'Luxembourg', itsvc:'ITSVC-1192', dateItsvc:'2024-10-20', gate:'Gate 3', dateGate:'2025-03-10', countries:[]}
+  ]},
+  { id:'F13', rank:13, name:'Insurance Claims AI', description:'Automated claims triage, fraud detection and damage assessment.', sponsor:'Insurance', owner:'P. Novak', division:'Insurance', subdivision:'Claims', poc:'A. Vargas', analyst:'C. Romero', useCases:[
+    { id:'U01F13', name:'Claims Triage', description:'Auto-classify and prioritize insurance claims at intake.', pole:'Claims', entity:'SG Insurance', aiAct:'High Risk', technology:'Multimodal LLM', platform:'Azure ML', brick:'Document AI', domain:'Multimodal', category:'Classification', sourcing:'Hybrid', iaValue:2600, contributors:'Insurance AI', pilot:'France', itsvc:'ITSVC-1207', dateItsvc:'2024-11-25', gate:'Gate 3', dateGate:'2025-04-02', countries:[]}
+  ]},
+  { id:'F14', rank:14, name:'Regulatory Reporting AI', description:'Automated extraction, validation and pre-filling of regulatory reports (FINREP, COREP, etc.).', sponsor:'Finance', owner:'B. Vargas', division:'Finance', subdivision:'Regulatory Reporting', poc:'M. Diallo', analyst:'V. Ahmed', useCases:[
+    { id:'U01F14', name:'COREP Auto-Validation', description:'Validate COREP submissions with ML-based anomaly detection.', pole:'Finance', entity:'SG Group', aiAct:'High Risk', technology:'Anomaly Detection ML', platform:'On-prem', brick:'Predictive AI', domain:'Tabular ML', category:'Anomaly Detection', sourcing:'In-house', iaValue:2900, contributors:'RegReporting AI', pilot:'France', itsvc:'ITSVC-1199', dateItsvc:'2024-11-08', gate:'Gate 3', dateGate:'2025-03-30', countries:[]}
+  ]},
+  { id:'F15', rank:15, name:'Cybersecurity AI', description:'AI-powered SOC: threat hunting, phishing detection, insider threat analytics.', sponsor:'Group Security', owner:'T. Berg', division:'Group IT', subdivision:'Cybersecurity', poc:'H. Mensah', analyst:'O. Karimov', useCases:[
+    { id:'U01F15', name:'Phishing Email Detection', description:'Detect phishing in inbound corporate email with vision + NLP models.', pole:'CyberSec', entity:'SG Group', aiAct:'Limited Risk', technology:'Multimodal Classifier', platform:'Azure ML', brick:'Multimodal AI', domain:'Multimodal', category:'Classification', sourcing:'In-house', iaValue:2400, contributors:'CyberAI Squad', pilot:'France', itsvc:'ITSVC-1182', dateItsvc:'2024-09-30', gate:'Gate 4', dateGate:'2025-02-22', countries:[]}
+  ]},
+  { id:'F16', rank:16, name:'Climate Stress Tests AI', description:'AI models for climate scenario analysis and physical/transition risk stress testing.', sponsor:'Risk', owner:'C. Iversen', division:'Risk', subdivision:'Climate Risk', poc:'A. Petrov', analyst:'L. Singh', useCases:[
+    { id:'U01F16', name:'Physical Risk Scoring', description:'Score real-estate portfolio physical climate risk.', pole:'Climate Risk', entity:'SG Group', aiAct:'Limited Risk', technology:'Geo-spatial ML', platform:'GCP Vertex AI', brick:'Predictive AI', domain:'Geospatial', category:'Scoring', sourcing:'In-house', iaValue:1900, contributors:'Climate AI', pilot:'France', itsvc:'ITSVC-1218', dateItsvc:'2024-12-15', gate:'Gate 2', dateGate:'2025-04-25', countries:[]}
+  ]},
+  { id:'F17', rank:17, name:'Customer Service Voice AI', description:'Voice AI for inbound retail call centers: intent detection, automated responses, post-call analytics.', sponsor:'Retail Banking', owner:'I. Renaud', division:'Retail Banking', subdivision:'Customer Service', poc:'D. Singh', analyst:'R. Costa', useCases:[
+    { id:'U01F17', name:'Post-Call Summarization', description:'Auto-summarize agent-customer calls and detect compliance issues.', pole:'Customer Service', entity:'SG Retail FR', aiAct:'Limited Risk', technology:'Speech-to-Text + LLM', platform:'Azure', brick:'Speech AI', domain:'Speech', category:'Transcription', sourcing:'Vendor', iaValue:2100, contributors:'Voice AI Team', pilot:'France', itsvc:'ITSVC-1213', dateItsvc:'2024-12-05', gate:'Gate 3', dateGate:'2025-04-12', countries:[]}
+  ]},
+  { id:'F18', rank:18, name:'Data Governance AI', description:'AI for metadata enrichment, data quality monitoring and lineage discovery across the group.', sponsor:'CDO Office', owner:'S. Andrade', division:'Group Data', subdivision:'Data Governance', poc:'F. Costa', analyst:'M. Khan', useCases:[
+    { id:'U01F18', name:'Auto Data Cataloging', description:'Auto-classify and tag datasets with business metadata.', pole:'Data Governance', entity:'SG Group', aiAct:'Minimal Risk', technology:'LLM + Schema Inference', platform:'Internal LLM Gateway', brick:'Generative AI', domain:'NLP', category:'Classification', sourcing:'In-house', iaValue:1700, contributors:'CDO Data Team', pilot:'France', itsvc:'ITSVC-1224', dateItsvc:'2025-01-15', gate:'Gate 2', dateGate:'2025-04-30', countries:[]}
+  ]}
+];
+
+/* ===================================================== */
+/* 3. ETAT GLOBAL                                        */
+/* ===================================================== */
+var state = {
+  data: null,                // tableau des flagships (avec leurs use cases et pays)
+  customFields: {            // champs custom ajoutés par l'admin
+    flagship: [],            // ex: [['budget','Budget','number']]
+    usecase: [],
+    country: []
+  },
+  accessLevel: 'locked',     // 'locked' | 'viewer' | 'contrib' | 'admin'
+  currentFid: null,
+  currentUid: null,
+  currentCountry: null,
+  editingFid: '',
+  editingUid: '',
+  editingCountry: ''
+};
+
+/* ===================================================== */
+/* 4. PERSISTANCE (localStorage)                         */
+/* ===================================================== */
+function loadStorage() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      state.data = parsed.data || clone(DEFAULT_DATA);
+      state.customFields = parsed.customFields || { flagship:[], usecase:[], country:[] };
+      return;
+    }
+  } catch(e) {}
+  state.data = clone(DEFAULT_DATA);
+}
+
+function saveStorage() {
+  try {
+    var payload = { data: state.data, customFields: state.customFields, savedAt: new Date().toISOString() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    showSaveIndicator(true);
+    return true;
+  } catch(e) {
+    showSaveIndicator(false);
+    return false;
+  }
+}
+
+// Debounce save pour auto-save
+var saveTimer = null;
+function autoSave() {
+  showSaveIndicator('saving');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveStorage, 300);
+}
+
+function showSaveIndicator(status) {
+  var el = byId('saveIndicator');
+  if (!el) return;
+  if (status === 'saving') {
+    el.textContent = '⟳ Saving…';
+    el.className = 'fr-save';
+  } else if (status === true) {
+    var now = new Date();
+    el.textContent = '✓ Saved ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+    el.className = 'fr-save saved';
+  } else if (status === false) {
+    el.textContent = '⚠ Save failed';
+    el.className = 'fr-save';
+  } else if (status === 'init') {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var p = JSON.parse(raw);
+        if (p.savedAt) {
+          var d = new Date(p.savedAt);
+          el.textContent = '✓ Saved ' + d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+          el.className = 'fr-save saved';
+          return;
+        }
+      }
+    } catch(e) {}
+    el.textContent = '—';
+  }
+}
+
+// Session: mémoriser le niveau d'accès le temps de la session (sessionStorage)
+function loadSession() {
+  try {
+    var lvl = sessionStorage.getItem(SESSION_KEY);
+    if (lvl && (lvl === 'viewer' || lvl === 'contrib' || lvl === 'admin')) {
+      state.accessLevel = lvl;
+    }
+  } catch(e) {}
+}
+
+function saveSession() {
+  try {
+    if (state.accessLevel === 'locked') sessionStorage.removeItem(SESSION_KEY);
+    else sessionStorage.setItem(SESSION_KEY, state.accessLevel);
+  } catch(e) {}
+}
+
+/* ===================================================== */
+/* 5. HELPERS                                            */
+/* ===================================================== */
+function byId(id) { return document.getElementById(id); }
+function esc(s) {
+  s = String(s == null ? '' : s);
+  return s.replace(/[&<>"']/g, function(m) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[m];
+  });
+}
+function fmt(n) { if (n == null || n === '') return '—'; return Number(n).toLocaleString('fr-FR'); }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function findFlag(id) {
+  for (var i = 0; i < state.data.length; i++) if (state.data[i].id === id) return state.data[i];
+  return null;
+}
+function findUc(f, id) {
+  if (!f) return null;
+  for (var i = 0; i < f.useCases.length; i++) if (f.useCases[i].id === id) return f.useCases[i];
+  return null;
+}
+function uid(p) { return p + '-' + Math.random().toString(36).slice(2, 8).toUpperCase(); }
+
+function totalValueUc(uc) {
+  var s = 0;
+  for (var i = 0; i < uc.countries.length; i++) s += Number(uc.countries[i].valCapped || 0);
+  return s;
+}
+
+function statusClass(uc) {
+  var pilot = false;
+  for (var i = 0; i < uc.countries.length; i++) {
+    if (uc.countries[i].status === 'Industrialized') return 'fr-live';
+    if (uc.countries[i].status === 'Pilot') pilot = true;
+  }
+  return pilot ? 'fr-pilot' : '';
+}
+
+function getAllFields(type) {
+  // Retourne les champs standard + custom pour un type donné
+  var baseFields;
+  if (type === 'flagship') baseFields = FLAGSHIP_FIELDS;
+  else if (type === 'usecase') baseFields = USECASE_FIELDS;
+  else if (type === 'country') baseFields = COUNTRY_FIELDS;
+  else return [];
+  return baseFields.concat(state.customFields[type] || []);
+}
+
+function isVisible(flagshipId) {
+  // Détermine si un flagship est visible selon le niveau d'accès
+  if (state.accessLevel === 'locked') return false;
+  var allowed = VISIBLE_FLAGSHIPS[state.accessLevel];
+  if (allowed === '*') return true;
+  if (Array.isArray(allowed)) return allowed.indexOf(flagshipId) !== -1;
+  return true;
+}
+
+function getVisibleData() {
+  // Retourne la liste filtrée selon le niveau d'accès
+  var out = [];
+  for (var i = 0; i < state.data.length; i++) {
+    if (isVisible(state.data[i].id)) out.push(state.data[i]);
+  }
+  return out;
+}
+
+function canEdit() {
+  return state.accessLevel === 'contrib' || state.accessLevel === 'admin';
+}
+function canAdmin() {
+  return state.accessLevel === 'admin';
+}
+
+/* ===================================================== */
+/* 6. UI HELPERS                                         */
+/* ===================================================== */
+function toast(msg, type) {
+  var t = byId('toast');
+  t.textContent = msg;
+  t.className = 'fr-toast show' + (type ? ' ' + type : '');
+  setTimeout(function() { t.className = 'fr-toast'; }, 2400);
+}
+
+function showOnly(id) {
+  var views = document.querySelectorAll('.fr-view');
+  for (var i = 0; i < views.length; i++) views[i].className = 'fr-view';
+  byId(id).className = 'fr-view active';
+}
+
+function setBreadcrumb(html) { byId('breadcrumb').innerHTML = html; }
+
+function applyAccessLevel() {
+  // Met à jour le badge + visibilité des boutons selon le niveau
+  var badge = byId('modeBadge');
+  var bc = byId('breadcrumb');
+
+  if (state.accessLevel === 'locked') {
+    badge.textContent = '🔒 Locked';
+    badge.className = 'fr-badge read';
+    bc.className = 'fr-breadcrumb fr-hidden';
+  } else if (state.accessLevel === 'viewer') {
+    badge.textContent = '👁 Viewer';
+    badge.className = 'fr-badge read';
+    bc.className = 'fr-breadcrumb';
+  } else if (state.accessLevel === 'contrib') {
+    badge.textContent = '✎ Contributor';
+    badge.className = 'fr-badge edit';
+    bc.className = 'fr-breadcrumb';
+  } else if (state.accessLevel === 'admin') {
+    badge.textContent = '★ Admin';
+    badge.className = 'fr-badge admin';
+    bc.className = 'fr-breadcrumb';
+  }
+
+  // Visibilité des boutons
+  var unlockedEls = document.querySelectorAll('.unlockedOnly');
+  for (var i = 0; i < unlockedEls.length; i++) {
+    unlockedEls[i].className = unlockedEls[i].className.replace(/fr-hidden/g, '').trim();
+    if (state.accessLevel === 'locked') unlockedEls[i].className += ' fr-hidden';
+  }
+
+  var editEls = document.querySelectorAll('.editOnly');
+  for (i = 0; i < editEls.length; i++) editEls[i].disabled = !canEdit();
+
+  var adminEls = document.querySelectorAll('.adminOnly');
+  for (i = 0; i < adminEls.length; i++) adminEls[i].disabled = !canAdmin();
+
+  // Import JSON : seulement édition
+  var importBtn = byId('importBtn');
+  if (importBtn) {
+    importBtn.className = canEdit() ? 'fr-btn editOnly' : 'fr-btn editOnly fr-hidden';
+  }
+}
+
+/* ===================================================== */
+/* 7. AUTH                                               */
+/* ===================================================== */
+function tryAuthLock() {
+  var pw = byId('lockPw').value;
+  var level = PASSWORDS[pw];
+  if (level) {
+    state.accessLevel = level;
+    saveSession();
+    byId('lockPw').value = '';
+    applyAccessLevel();
+    showList();
+    toast('✓ Accès accordé : ' + level, 'success');
+  } else {
+    byId('lockPw').value = '';
+    toast('Mot de passe incorrect', 'error');
+  }
+}
+
+function openAuth() {
+  if (state.accessLevel === 'locked') {
+    showOnly('viewLock');
+    setTimeout(function() { byId('lockPw').focus(); }, 50);
+    return;
+  }
+  byId('authPw').value = '';
+  byId('authModal').className = 'fr-modal-bg show';
+  setTimeout(function() { byId('authPw').focus(); }, 50);
+}
+
+function tryAuth() {
+  var pw = byId('authPw').value;
+  var level = PASSWORDS[pw];
+  if (level) {
+    state.accessLevel = level;
+    saveSession();
+    byId('authPw').value = '';
+    closeModal('authModal');
+    applyAccessLevel();
+    showList();
+    toast('✓ Niveau d\'accès changé : ' + level, 'success');
+  } else {
+    byId('authPw').value = '';
+    toast('Mot de passe incorrect', 'error');
+  }
+}
+
+function lockApp() {
+  state.accessLevel = 'locked';
+  saveSession();
+  closeModal('authModal');
+  applyAccessLevel();
+  showOnly('viewLock');
+  toast('Application verrouillée');
+}
+
+function closeModal(id) { byId(id).className = 'fr-modal-bg'; }
+function hideBanner() { byId('banner').style.display = 'none'; }
+
+/* ===================================================== */
+/* 8. NAVIGATION                                         */
+/* ===================================================== */
+function showList() {
+  if (state.accessLevel === 'locked') return showOnly('viewLock');
+  state.currentFid = null;
+  state.currentUid = null;
+  state.currentCountry = null;
+  showOnly('viewList');
+  setBreadcrumb('<a onclick="App.showList()">TOP 18</a>');
+  renderList();
+}
+
+function showFlag(fid) {
+  if (!isVisible(fid)) { toast('Flagship non visible avec votre niveau d\'accès'); return; }
+  state.currentFid = fid;
+  state.currentUid = null;
+  var f = findFlag(fid);
+  if (!f) return;
+  showOnly('viewFlag');
+  setBreadcrumb('<a onclick="App.showList()">TOP 18</a> / <b>' + esc(f.name) + '</b>');
+  renderFlag();
+}
+
+function showUc(fid, ucid) {
+  if (!isVisible(fid)) return;
+  state.currentFid = fid;
+  state.currentUid = ucid;
+  state.currentCountry = null;
+  var f = findFlag(fid);
+  var uc = findUc(f, ucid);
+  if (!uc) return;
+  showOnly('viewUc');
+  setBreadcrumb('<a onclick="App.showList()">TOP 18</a> / <a onclick="App.showFlag(\'' + esc(f.id) + '\')">' + esc(f.name) + '</a> / <b>' + esc(uc.name) + '</b>');
+  renderUc();
+}
+
+/* ===================================================== */
+/* 9. RENDERING                                          */
+/* ===================================================== */
+function renderList() {
+  var visibleFlagships = getVisibleData();
+  var q = byId('search').value.toLowerCase();
+  var div = byId('filterDiv').value;
+
+  // Stats (calculées sur visible uniquement)
+  var countries = {}, totalValue = 0, ucn = 0, divs = {};
+  for (var i = 0; i < visibleFlagships.length; i++) {
+    divs[visibleFlagships[i].division] = 1;
+    ucn += visibleFlagships[i].useCases.length;
+    for (var j = 0; j < visibleFlagships[i].useCases.length; j++) {
+      var uc = visibleFlagships[i].useCases[j];
+      for (var k = 0; k < uc.countries.length; k++) {
+        countries[uc.countries[k].country] = 1;
+        totalValue += Number(uc.countries[k].valCapped || 0);
+      }
+    }
+  }
+  byId('statF').textContent = fmt(visibleFlagships.length);
+  byId('statU').textContent = fmt(ucn);
+  byId('statV').textContent = fmt(totalValue);
+  byId('statC').textContent = fmt(Object.keys(countries).length);
+
+  // Division filter
+  var sel = byId('filterDiv');
+  var old = sel.value;
+  var divHtml = '<option value="">All divisions</option>';
+  var sortedDivs = Object.keys(divs).sort();
+  for (i = 0; i < sortedDivs.length; i++) divHtml += '<option value="' + esc(sortedDivs[i]) + '">' + esc(sortedDivs[i]) + '</option>';
+  sel.innerHTML = divHtml;
+  sel.value = old;
+
+  // Cards
+  var out = '';
+  for (i = 0; i < visibleFlagships.length; i++) {
+    var f = visibleFlagships[i];
+    var hay = (f.name + ' ' + f.description + ' ' + f.sponsor + ' ' + f.division).toLowerCase();
+    if (q && hay.indexOf(q) < 0) continue;
+    if (div && f.division !== div) continue;
+    var tv = 0;
+    for (j = 0; j < f.useCases.length; j++) tv += totalValueUc(f.useCases[j]);
+    out += '<div class="fr-card" onclick="App.showFlag(\'' + esc(f.id) + '\')">' +
+      '<div class="fr-rank">TOP ' + esc(String(f.rank).padStart ? String(f.rank).padStart(2,'0') : f.rank) + '</div>' +
+      '<div class="fr-name">' + esc(f.name) + '</div>' +
+      '<div class="fr-muted">' + esc(f.description) + '</div>' +
+      '<div style="margin-top:10px"><span class="fr-chip">' + esc(f.division) + '</span><span class="fr-chip">' + esc(f.subdivision || f.sponsor) + '</span></div>' +
+      '<div class="fr-footer"><span>' + f.useCases.length + ' use case' + (f.useCases.length>1?'s':'') + '</span><b>' + fmt(tv) + ' k€</b></div>' +
+      '</div>';
+  }
+  byId('grid').innerHTML = out || '<div class="fr-empty" style="grid-column:1/-1">Aucun flagship ne correspond.</div>';
+}
+
+function renderFlag() {
+  var f = findFlag(state.currentFid);
+  if (!f) return;
+  byId('fdRank').textContent = 'TOP ' + (String(f.rank).padStart ? String(f.rank).padStart(2,'0') : f.rank);
+  byId('fdName').textContent = f.name;
+  byId('fdSub').textContent = f.description;
+
+  // Info panel
+  var fields = getAllFields('flagship');
+  var info = '<h2 style="font-size:14px;color:#8b1e3f;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #e3ddd0">Flagship Details</h2>';
+  for (var i = 0; i < fields.length; i++) {
+    var k = fields[i][0], lab = fields[i][1];
+    if (k === '__section__') continue;
+    if (k === 'name' || k === 'description') continue; // déjà affichés en titre
+    info += '<div style="margin-bottom:12px"><div class="fr-label">' + esc(lab) + '</div><div>' + esc(f[k] || '—') + '</div></div>';
+  }
+  info += '<div style="margin-bottom:12px"><div class="fr-label">Flagship ID</div><div style="font-family:monospace;font-size:12px">' + esc(f.id) + '</div></div>';
+  byId('fdInfo').innerHTML = info;
+
+  // Use cases
+  byId('ucCount').textContent = '(' + f.useCases.length + ')';
+  var out = '';
+  for (i = 0; i < f.useCases.length; i++) {
+    var uc = f.useCases[i];
+    var sc = statusClass(uc);
+    var st = sc === 'fr-live' ? 'Live' : sc === 'fr-pilot' ? 'Pilot' : 'Draft';
+    out += '<div class="fr-row" onclick="App.showUc(\'' + esc(f.id) + '\',\'' + esc(uc.id) + '\')">' +
+      '<div><b style="font-family:Georgia,serif;font-size:16px">' + esc(uc.name) + '</b><div class="fr-muted" style="font-size:12px;margin-top:3px">' + esc(uc.description) + '</div></div>' +
+      '<div class="fr-status ' + sc + '">' + st + ' · ' + uc.countries.length + ' pays</div>' +
+      '<div style="font-family:Georgia,serif;font-weight:bold;color:#8b1e3f;text-align:right">' + fmt(totalValueUc(uc)) + ' k€</div>' +
+      '</div>';
+  }
+  byId('ucList').innerHTML = out || '<div class="fr-empty">Aucun use case. ' + (canEdit() ? 'Cliquez sur "+ Add use case".' : '') + '</div>';
+}
+
+function renderUc() {
+  var f = findFlag(state.currentFid);
+  var uc = findUc(f, state.currentUid);
+  if (!uc) return;
+  byId('ucName').textContent = uc.name;
+  byId('ucDesc').textContent = uc.description;
+
+  // Attrs
+  var fields = getAllFields('usecase');
+  var h = '';
+  for (var i = 0; i < fields.length; i++) {
+    var k = fields[i][0], lab = fields[i][1];
+    if (k === '__section__') continue;
+    if (k === 'name' || k === 'description') continue;
+    var v = uc[k];
+    if (k === 'iaValue') v = v ? fmt(v) + ' k€' : '—';
+    h += '<div><div class="fr-label">' + esc(lab) + '</div><div>' + esc(v || '—') + '</div></div>';
+  }
+  byId('ucAttrs').innerHTML = h;
+  renderCountries();
+}
+
+function renderCountries() {
+  var f = findFlag(state.currentFid);
+  var uc = findUc(f, state.currentUid);
+  if (!uc) return;
+  byId('countryCount').textContent = '(' + uc.countries.length + ')';
+
+  if (uc.countries.length === 0) {
+    byId('tabs').innerHTML = '';
+    byId('countryPanel').innerHTML = '<div class="fr-empty">Aucun pays déployé. ' + (canEdit() ? 'Cliquez sur "+ Add country".' : '') + '</div>';
+    return;
+  }
+
+  // Choisir le pays actif
+  if (!state.currentCountry) state.currentCountry = uc.countries[0].country;
+  var exists = false;
+  for (var i = 0; i < uc.countries.length; i++) if (uc.countries[i].country === state.currentCountry) exists = true;
+  if (!exists) state.currentCountry = uc.countries[0].country;
+
+  // Tabs
+  var tabs = '';
+  for (i = 0; i < uc.countries.length; i++) {
+    var c = uc.countries[i];
+    var active = c.country === state.currentCountry ? 'active' : '';
+    tabs += '<button type="button" class="fr-tab ' + active + '" onclick="App.selectCountry(\'' + esc(c.country) + '\')">' + esc(c.country) + '</button>';
+  }
+  byId('tabs').innerHTML = tabs;
+
+  // Panel actif
+  var current = null;
+  for (i = 0; i < uc.countries.length; i++) if (uc.countries[i].country === state.currentCountry) current = uc.countries[i];
+
+  var fields = getAllFields('country');
+  var h = '<div class="fr-country-grid">';
+  for (i = 0; i < fields.length; i++) {
+    var k = fields[i][0], lab = fields[i][1];
+    if (k === '__section__') continue;
+    var v = current[k];
+    if (k.indexOf('val') === 0) v = (v != null && v !== '') ? fmt(v) + ' k€' : '—';
+    h += '<div><div class="fr-label">' + esc(lab) + '</div><div>' + esc(v || '—') + '</div></div>';
+  }
+  h += '</div>';
+  h += '<div style="display:flex;gap:8px;margin-top:14px">';
+  h += '<button type="button" class="fr-btn editOnly" onclick="App.openCountryModal(\'' + esc(current.country) + '\')" ' + (canEdit()?'':'disabled') + '>✎ Edit country</button>';
+  h += '<button type="button" class="fr-btn danger editOnly" onclick="App.deleteCountry(\'' + esc(current.country) + '\')" ' + (canEdit()?'':'disabled') + '>🗑 Delete country</button>';
+  h += '</div>';
+  byId('countryPanel').innerHTML = h;
+}
+
+function selectCountry(c) {
+  state.currentCountry = c;
+  renderCountries();
+}
+
+/* ===================================================== */
+/* 10. MODAL BUILDERS                                    */
+/* ===================================================== */
+function buildField(field, obj) {
+  var k = field[0], lab = field[1], type = field[2], opts = field[3], full = field[4];
+  if (k === '__section__') return '<div class="fr-section">' + esc(lab) + '</div>';
+  var v = obj && obj[k] != null ? obj[k] : '';
+  var fid = 'modal_' + k;
+  var h = '<div class="fr-field' + (full ? ' full' : '') + '"><label>' + esc(lab) + '</label>';
+  if (type === 'textarea') {
+    h += '<textarea id="' + fid + '">' + esc(v) + '</textarea>';
+  } else if (type === 'select') {
+    h += '<select id="' + fid + '">';
+    for (var i = 0; i < opts.length; i++) {
+      h += '<option' + (opts[i] === v ? ' selected' : '') + '>' + esc(opts[i]) + '</option>';
+    }
+    h += '</select>';
+  } else {
+    h += '<input id="' + fid + '" type="' + (type || 'text') + '" value="' + esc(v) + '">';
+  }
+  h += '</div>';
+  return h;
+}
+
+function modalShell(modalId, title, formHtml, saveFnName) {
+  byId(modalId).innerHTML =
+    '<div class="fr-modal">' +
+      '<div class="fr-modal-head"><h2>' + esc(title) + '</h2><button type="button" class="fr-btn" onclick="App.closeModal(\'' + modalId + '\')">✕</button></div>' +
+      '<div class="fr-form">' + formHtml + '</div>' +
+      '<div class="fr-modal-foot">' +
+        '<button type="button" class="fr-btn" onclick="App.closeModal(\'' + modalId + '\')">Cancel</button>' +
+        '<button type="button" class="fr-btn primary" onclick="App.' + saveFnName + '()">Save</button>' +
+      '</div>' +
+    '</div>';
+  byId(modalId).className = 'fr-modal-bg show';
+}
+
+function readFieldValue(field) {
+  var k = field[0], type = field[2];
+  if (k === '__section__') return null;
+  var el = byId('modal_' + k);
+  if (!el) return null;
+  if (type === 'number') return Number(el.value || 0);
+  return el.value;
+}
+
+function readAllFields(type, obj) {
+  // Lit toutes les valeurs des champs (standard + custom) et les met dans obj
+  var fields = getAllFields(type);
+  for (var i = 0; i < fields.length; i++) {
+    var k = fields[i][0];
+    if (k === '__section__') continue;
+    var v = readFieldValue(fields[i]);
+    if (v !== null) obj[k] = v;
+  }
+}
+
+/* ===================================================== */
+/* 11. FLAGSHIP CRUD                                     */
+/* ===================================================== */
+function openFlagModal(fid) {
+  if (!canEdit()) return;
+  state.editingFid = fid || '';
+  var f = state.editingFid ? findFlag(state.editingFid) : null;
+  var fields = getAllFields('flagship');
+  var html = '';
+  for (var i = 0; i < fields.length; i++) html += buildField(fields[i], f);
+  modalShell('flagModal', state.editingFid ? 'Edit Flagship' : 'New Flagship', html, 'saveFlag');
+}
+
+function saveFlag() {
+  var f = state.editingFid ? findFlag(state.editingFid) : null;
+  var isNew = !f;
+  if (isNew) {
+    f = { id: uid('F'), rank: state.data.length + 1, useCases: [] };
+    state.data.push(f);
+  }
+  readAllFields('flagship', f);
+  if (!f.name) { toast('Le nom est requis', 'error'); if (isNew) state.data.pop(); return; }
+  autoSave();
+  closeModal('flagModal');
+  toast(isNew ? 'Flagship créé' : 'Flagship mis à jour', 'success');
+  if (state.currentFid === f.id || isNew && state.editingFid === '') {
+    if (state.currentFid) showFlag(f.id);
+    else showList();
+  } else {
+    renderList();
+  }
+}
+
+function deleteFlag() {
+  if (!canEdit()) return;
+  if (!confirm('Supprimer ce flagship et tous ses use cases ? Action irréversible.')) return;
+  state.data = state.data.filter(function(f) { return f.id !== state.currentFid; });
+  autoSave();
+  toast('Flagship supprimé', 'success');
+  showList();
+}
+
+/* ===================================================== */
+/* 12. USE CASE CRUD                                     */
+/* ===================================================== */
+function openUcModal(ucid) {
+  if (!canEdit()) return;
+  state.editingUid = ucid || '';
+  var f = findFlag(state.currentFid);
+  var uc = state.editingUid ? findUc(f, state.editingUid) : null;
+  var fields = getAllFields('usecase');
+  var html = '';
+  for (var i = 0; i < fields.length; i++) html += buildField(fields[i], uc);
+  modalShell('ucModal', state.editingUid ? 'Edit Use Case' : 'New Use Case', html, 'saveUc');
+}
+
+function saveUc() {
+  var f = findFlag(state.currentFid);
+  var uc = state.editingUid ? findUc(f, state.editingUid) : null;
+  var isNew = !uc;
+  if (isNew) {
+    uc = { id: uid('U'), countries: [] };
+    f.useCases.push(uc);
+  }
+  readAllFields('usecase', uc);
+  if (!uc.name) { toast('Le nom est requis', 'error'); if (isNew) f.useCases.pop(); return; }
+  autoSave();
+  closeModal('ucModal');
+  toast(isNew ? 'Use case créé' : 'Use case mis à jour', 'success');
+  if (state.currentUid && !isNew) showUc(state.currentFid, uc.id);
+  else showFlag(state.currentFid);
+}
+
+function deleteUc() {
+  if (!canEdit()) return;
+  if (!confirm('Supprimer ce use case ? Action irréversible.')) return;
+  var f = findFlag(state.currentFid);
+  f.useCases = f.useCases.filter(function(u) { return u.id !== state.currentUid; });
+  autoSave();
+  toast('Use case supprimé', 'success');
+  showFlag(state.currentFid);
+}
+
+/* ===================================================== */
+/* 13. COUNTRY CRUD                                      */
+/* ===================================================== */
+function openCountryModal(country) {
+  if (!canEdit()) return;
+  state.editingCountry = country || '';
+  var f = findFlag(state.currentFid);
+  var uc = findUc(f, state.currentUid);
+  var c = null;
+  if (state.editingCountry) {
+    for (var i = 0; i < uc.countries.length; i++) if (uc.countries[i].country === state.editingCountry) c = uc.countries[i];
+  }
+  if (!c) c = { year: new Date().getFullYear() };
+  var fields = getAllFields('country');
+  var html = '';
+  for (i = 0; i < fields.length; i++) html += buildField(fields[i], c);
+  modalShell('countryModal', state.editingCountry ? 'Edit Country: ' + state.editingCountry : 'Add Country Rollout', html, 'saveCountry');
+}
+
+function saveCountry() {
+  var f = findFlag(state.currentFid);
+  var uc = findUc(f, state.currentUid);
+  var c = null;
+  if (state.editingCountry) {
+    for (var i = 0; i < uc.countries.length; i++) if (uc.countries[i].country === state.editingCountry) c = uc.countries[i];
+  }
+  var isNew = !c;
+  if (isNew) {
+    c = {};
+    uc.countries.push(c);
+  }
+  readAllFields('country', c);
+  if (!c.country) { toast('Le pays est requis', 'error'); if (isNew) uc.countries.pop(); return; }
+  state.currentCountry = c.country;
+  autoSave();
+  closeModal('countryModal');
+  toast(isNew ? 'Pays ajouté' : 'Pays mis à jour', 'success');
+  renderUc();
+}
+
+function deleteCountry(country) {
+  if (!canEdit()) return;
+  if (!confirm('Supprimer le déploiement pour ' + country + ' ?')) return;
+  var uc = findUc(findFlag(state.currentFid), state.currentUid);
+  uc.countries = uc.countries.filter(function(c) { return c.country !== country; });
+  if (state.currentCountry === country) state.currentCountry = null;
+  autoSave();
+  toast('Pays supprimé', 'success');
+  renderCountries();
+}
+
+/* ===================================================== */
+/* 14. CUSTOM FIELDS (admin only)                        */
+/* ===================================================== */
+function manageCustomFields(type) {
+  if (!canAdmin()) return;
+  var typeLabel = { flagship:'Flagship', usecase:'Use Case', country:'Country' }[type];
+  var custom = state.customFields[type] || [];
+
+  var html = '<div class="fr-field full"><div class="fr-muted" style="font-size:12px;margin-bottom:10px">Champs custom existants pour <b>' + typeLabel + '</b> :</div>';
+  if (custom.length === 0) {
+    html += '<div class="fr-empty" style="padding:14px;font-size:12px">Aucun champ custom.</div>';
+  } else {
+    html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+    html += '<tr style="background:#fbfaf7"><th style="text-align:left;padding:8px;border:1px solid #e3ddd0">Key</th><th style="text-align:left;padding:8px;border:1px solid #e3ddd0">Label</th><th style="text-align:left;padding:8px;border:1px solid #e3ddd0">Type</th><th style="padding:8px;border:1px solid #e3ddd0">Action</th></tr>';
+    for (var i = 0; i < custom.length; i++) {
+      html += '<tr><td style="padding:8px;border:1px solid #e3ddd0;font-family:monospace">' + esc(custom[i][0]) + '</td><td style="padding:8px;border:1px solid #e3ddd0">' + esc(custom[i][1]) + '</td><td style="padding:8px;border:1px solid #e3ddd0">' + esc(custom[i][2]) + '</td><td style="padding:8px;border:1px solid #e3ddd0;text-align:center"><button type="button" class="fr-btn danger small" onclick="App.removeCustomField(\'' + type + '\',' + i + ')">🗑</button></td></tr>';
+    }
+    html += '</table>';
+  }
+  html += '</div>';
+
+  html += '<div class="fr-section">Add new custom field</div>';
+  html += '<div class="fr-field"><label>Key (technical, no spaces)</label><input id="cfKey" type="text" placeholder="ex: budget, owner2..."></div>';
+  html += '<div class="fr-field"><label>Display label</label><input id="cfLabel" type="text" placeholder="ex: Budget alloué"></div>';
+  html += '<div class="fr-field"><label>Type</label><select id="cfType"><option value="text">Text</option><option value="textarea">Long text</option><option value="number">Number</option><option value="date">Date</option><option value="select">Select (comma-separated options)</option></select></div>';
+  html += '<div class="fr-field"><label>Options (only for select, comma-separated)</label><input id="cfOptions" type="text" placeholder="Option A, Option B, Option C"></div>';
+
+  byId('customFieldsModal').innerHTML =
+    '<div class="fr-modal">' +
+      '<div class="fr-modal-head"><h2>⚙ Custom fields — ' + typeLabel + '</h2><button type="button" class="fr-btn" onclick="App.closeModal(\'customFieldsModal\')">✕</button></div>' +
+      '<div class="fr-form">' + html + '</div>' +
+      '<div class="fr-modal-foot">' +
+        '<button type="button" class="fr-btn" onclick="App.closeModal(\'customFieldsModal\')">Close</button>' +
+        '<button type="button" class="fr-btn primary" onclick="App.addCustomField(\'' + type + '\')">Add field</button>' +
+      '</div>' +
+    '</div>';
+  byId('customFieldsModal').className = 'fr-modal-bg show';
+}
+
+function addCustomField(type) {
+  var key = byId('cfKey').value.trim().replace(/[^a-zA-Z0-9_]/g, '');
+  var label = byId('cfLabel').value.trim();
+  var ftype = byId('cfType').value;
+  var optStr = byId('cfOptions').value.trim();
+  if (!key) { toast('Key requise', 'error'); return; }
+  if (!label) { toast('Label requis', 'error'); return; }
+
+  // Vérifier qu'il n'existe pas déjà
+  var existing = getAllFields(type);
+  for (var i = 0; i < existing.length; i++) {
+    if (existing[i][0] === key) { toast('Cette key existe déjà', 'error'); return; }
+  }
+
+  var field = [key, label, ftype];
+  if (ftype === 'select') {
+    var opts = optStr.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+    if (opts.length < 2) { toast('Au moins 2 options requises pour un select', 'error'); return; }
+    field.push(opts);
+  }
+
+  state.customFields[type].push(field);
+  autoSave();
+  toast('Champ custom ajouté', 'success');
+  manageCustomFields(type); // refresh
+}
+
+function removeCustomField(type, index) {
+  if (!confirm('Supprimer ce champ custom ? Les données existantes resteront mais ne seront plus affichées.')) return;
+  state.customFields[type].splice(index, 1);
+  autoSave();
+  toast('Champ supprimé', 'success');
+  manageCustomFields(type);
+}
+
+/* ===================================================== */
+/* 15. EXPORT (JSON + Excel)                             */
+/* ===================================================== */
+function exportJSON() {
+  var payload = {
+    exportedAt: new Date().toISOString(),
+    version: 3,
+    customFields: state.customFields,
+    flagships: state.data
+  };
+  var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'flagship-registry-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  toast('Export JSON téléchargé', 'success');
+}
+
+function exportExcel() {
+  if (typeof XLSX === 'undefined') {
+    toast('SheetJS non chargé. Réessayez dans un instant.', 'error');
+    return;
+  }
+
+  var wb = XLSX.utils.book_new();
+
+  // Sheet 1: Flagships
+  var flagshipRows = [];
+  var flagshipFields = getAllFields('flagship');
+  var flagshipHeader = ['ID', 'Rank'];
+  for (var i = 0; i < flagshipFields.length; i++) {
+    if (flagshipFields[i][0] !== '__section__') flagshipHeader.push(flagshipFields[i][1]);
+  }
+  flagshipHeader.push('Use Case Count', 'Total AI Value (k€ FY)');
+  flagshipRows.push(flagshipHeader);
+  for (i = 0; i < state.data.length; i++) {
+    var f = state.data[i];
+    var row = [f.id, f.rank];
+    for (var j = 0; j < flagshipFields.length; j++) {
+      if (flagshipFields[j][0] !== '__section__') row.push(f[flagshipFields[j][0]] || '');
+    }
+    var totalVal = 0;
+    for (var k = 0; k < f.useCases.length; k++) totalVal += totalValueUc(f.useCases[k]);
+    row.push(f.useCases.length, totalVal);
+    flagshipRows.push(row);
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(flagshipRows), 'Flagships');
+
+  // Sheet 2: Use Cases
+  var ucFields = getAllFields('usecase');
+  var ucRows = [];
+  var ucHeader = ['Flagship ID', 'Flagship Name', 'Use Case ID'];
+  for (i = 0; i < ucFields.length; i++) if (ucFields[i][0] !== '__section__') ucHeader.push(ucFields[i][1]);
+  ucRows.push(ucHeader);
+  for (i = 0; i < state.data.length; i++) {
+    var ff = state.data[i];
+    for (j = 0; j < ff.useCases.length; j++) {
+      var uc = ff.useCases[j];
+      var urow = [ff.id, ff.name, uc.id];
+      for (k = 0; k < ucFields.length; k++) {
+        if (ucFields[k][0] !== '__section__') urow.push(uc[ucFields[k][0]] || '');
+      }
+      ucRows.push(urow);
+    }
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ucRows), 'Use Cases');
+
+  // Sheet 3: Country Rollouts
+  var ctFields = getAllFields('country');
+  var ctRows = [];
+  var ctHeader = ['Flagship ID', 'Flagship Name', 'Use Case ID', 'Use Case Name'];
+  for (i = 0; i < ctFields.length; i++) if (ctFields[i][0] !== '__section__') ctHeader.push(ctFields[i][1]);
+  ctRows.push(ctHeader);
+  for (i = 0; i < state.data.length; i++) {
+    var fff = state.data[i];
+    for (j = 0; j < fff.useCases.length; j++) {
+      var ucc = fff.useCases[j];
+      for (k = 0; k < ucc.countries.length; k++) {
+        var c = ucc.countries[k];
+        var crow = [fff.id, fff.name, ucc.id, ucc.name];
+        for (var l = 0; l < ctFields.length; l++) {
+          if (ctFields[l][0] !== '__section__') crow.push(c[ctFields[l][0]] != null ? c[ctFields[l][0]] : '');
+        }
+        ctRows.push(crow);
+      }
+    }
+  }
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ctRows), 'Country Rollouts');
+
+  XLSX.writeFile(wb, 'flagship-registry-' + new Date().toISOString().slice(0,10) + '.xlsx');
+  toast('Export Excel téléchargé', 'success');
+}
+
+/* ===================================================== */
+/* 16. IMPORT JSON                                       */
+/* ===================================================== */
+function handleImport(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var r = new FileReader();
+  r.onload = function(ev) {
+    try {
+      var parsed = JSON.parse(ev.target.result);
+      var newData;
+      if (Array.isArray(parsed)) {
+        newData = parsed;
+      } else if (parsed && Array.isArray(parsed.flagships)) {
+        newData = parsed.flagships;
+        if (parsed.customFields) state.customFields = parsed.customFields;
+      } else {
+        throw new Error('bad format');
+      }
+      if (!confirm('Importer ' + newData.length + ' flagships ? Vos données actuelles seront remplacées.')) {
+        event.target.value = ''; return;
+      }
+      state.data = newData;
+      autoSave();
+      toast(newData.length + ' flagships importés', 'success');
+      showList();
+    } catch(x) {
+      toast('Fichier JSON invalide', 'error');
+    }
+  };
+  r.readAsText(file);
+  event.target.value = '';
+}
+
+/* ===================================================== */
+/* 17. INIT                                              */
+/* ===================================================== */
+function init() {
+  loadStorage();
+  loadSession();
+
+  // File input
+  byId('importFile').onchange = handleImport;
+
+  showSaveIndicator('init');
+  applyAccessLevel();
+
+  if (state.accessLevel === 'locked') {
+    showOnly('viewLock');
+  } else {
+    showList();
+  }
+}
+
+/* ===================================================== */
+/* 18. PUBLIC API                                        */
+/* ===================================================== */
+return {
+  state: state,
+  // Auth
+  openAuth: openAuth,
+  tryAuth: tryAuth,
+  tryAuthLock: tryAuthLock,
+  lockApp: lockApp,
+  // Navigation
+  showList: showList,
+  showFlag: showFlag,
+  showUc: showUc,
+  selectCountry: selectCountry,
+  // Rendering
+  renderList: renderList,
+  // CRUD Flagship
+  openFlagModal: openFlagModal,
+  saveFlag: saveFlag,
+  deleteFlag: deleteFlag,
+  // CRUD Use Case
+  openUcModal: openUcModal,
+  saveUc: saveUc,
+  deleteUc: deleteUc,
+  // CRUD Country
+  openCountryModal: openCountryModal,
+  saveCountry: saveCountry,
+  deleteCountry: deleteCountry,
+  // Custom fields
+  manageCustomFields: manageCustomFields,
+  addCustomField: addCustomField,
+  removeCustomField: removeCustomField,
+  // Export
+  exportJSON: exportJSON,
+  exportExcel: exportExcel,
+  // UI
+  closeModal: closeModal,
+  hideBanner: hideBanner,
+  // Init
+  init: init
+};
+
+})();
+
+// Bootstrap
+App.init();
+</script>
+</body>
+</html>
